@@ -1,0 +1,5 @@
+/.sentry-native
+/.vs
+/.vscode
+/.vscode-linux
+/builds

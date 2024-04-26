@@ -1,0 +1,7 @@
+name=Blank
+author=Elioth, Inc.
+description=Blank blank.
+bundleID=com.eliothgames.Blank
+version=1.0.0
+buildNumber=100
+imagePath=SystemAssets
