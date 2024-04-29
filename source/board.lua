@@ -13,7 +13,7 @@ local board = {
     width  = 10,
     height = 10,
 
-    maxBomb = 70,
+    maxBomb = 15,
     tileMap = {},
 }
 local tileSize = 19
