@@ -31,6 +31,7 @@ end
 
 function Update()
 	deltaTime = playdate.getElapsedTime()
+	totalTime += deltaTime
 
 	UpdateBoard()
 

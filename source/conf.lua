@@ -2,12 +2,14 @@
 screenWidth = 400
 screenHeight = 240
 
-smallFont = playdate.graphics.font.new("fonts/Nontendo-Light")
-bigFont   = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
+smallFont    = playdate.graphics.font.new("fonts/Nontendo-Light")
+bigFont      = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
+smallNumFont = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
 
 deltaTime = 0
+totalTime = 0
 muteMusic        = false
-showDebugInfo    = false
+showDebugInfo    = true
 directlyGoInGame = false
 
 function Clamp(value, min, max)
@@ -24,8 +26,10 @@ function Lerp(start, finish, t)
     return start + t * (finish - start)
 end
 
-function SmoothValue(smoothedValue, desiredValue, speed)
-	return smoothedValue + (desiredValue - smoothedValue) * speed * deltaTime
+function SmoothValue(smoothedValue, desiredValue, speed, deltaTime)
+	local returnValue = smoothedValue + (desiredValue - smoothedValue) * speed * deltaTime
+	if math.abs(desiredValue - smoothedValue) < 0.005 then returnValue = desiredValue end
+	return returnValue
 end
 
 function Distance(x1, y1, x2, y2)
