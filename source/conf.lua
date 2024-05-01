@@ -1,10 +1,9 @@
 
-screenWidth = 400
+screenWidth  = 400
 screenHeight = 240
 
-smallFont    = playdate.graphics.font.new("fonts/Nontendo-Light")
-bigFont      = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
-smallNumFont = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
+smallFont = playdate.graphics.font.new("fonts/Nontendo-Light")
+bigFont   = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
 
 deltaTime = 0
 totalTime = 0
@@ -34,4 +33,15 @@ end
 
 function Distance(x1, y1, x2, y2)
     return math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+end
+
+function Direction(x1, y1, x2, y2)
+    local dir = {dx = x2 - x1, dy = y2 - y1}
+    -- Normalize the vector (optional step)
+    local length = math.sqrt(dir.dx^2 + dir.dy^2)
+    if length ~= 0 then
+        dir.dx = dir.dx / length
+        dir.dy = dir.dy / length
+    end
+    return dir
 end

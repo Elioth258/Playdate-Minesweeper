@@ -18,9 +18,11 @@ local board = {
 }
 local tileSize = 19
 
-local cursorPos = {x = 1, y = 1}
+local cursorPos = {x = 5, y = 5}
 
 local mapIsInitialised = false
+
+local dropletList = {}
 
 function InitBoard(bannedPos)
     local function CreateTile()
@@ -79,9 +81,10 @@ function UpdateBoard()
             InitBoard(cursorPos)
         end
 
+        CreateDroplet(cursorPos.x, cursorPos.y, 1)
         SearchTile(cursorPos.x, cursorPos.y)
     end
-    if playdate.buttonJustPressed(playdate.kButtonB) then
+    if playdate.buttonJustPressed(playdate.kButtonB) and mapIsInitialised then
         local txtState = board.tileMap[cursorPos.y][cursorPos.x].state
 
         if txtState == "none" then board.tileMap[cursorPos.y][cursorPos.x].state = "flag" end
@@ -101,6 +104,13 @@ function UpdateBoard()
     if playdate.buttonJustPressed(playdate.kButtonRight) and cursorPos.x < board.height then
         cursorPos.x += 1
     end
+
+    for i, drop in ipairs(dropletList) do
+        drop.size += deltaTime * tileSize * 15
+        if drop.size > 250 then
+            table.remove(dropletList, i)
+        end
+    end
 end
 function DrawBoard()
     local function DeltaY(dx, dy)
@@ -119,6 +129,16 @@ function DrawBoard()
             local y = (startY + (i - 1) * tileSize) + DeltaY(i, j)
             local x = (startX + (j - 1) * tileSize)
 
+            for k, drop in ipairs(dropletList) do
+                local dist = Distance(drop.pos.x, drop.pos.y, j, i) - drop.size / tileSize
+                if math.abs(dist) < 1 then
+                    local dir = Direction(drop.pos.x, drop.pos.y, j, i)
+
+                    x += dir.dx * dist * drop.power
+                    y += dir.dy * dist * drop.power
+                end
+            end
+
             if not mapIsInitialised then
                 if imgHidden then imgHidden:draw(x, y) end
             else
@@ -131,16 +151,13 @@ function DrawBoard()
                     elseif board.tileMap[i][j].number > 0 then
                         gfx.drawTextAligned(board.tileMap[i][j].number, x + tileSize / 2, y + tileSize / 4, kTextAlignment.center)
                     end
-                else
-                    if imgHidden then imgHidden:draw(x, y) end
-                end
-
-                if board.tileMap[i][j].state == "flag" then
+                elseif board.tileMap[i][j].state == "flag" then
                     if imgFlag then imgFlag:draw(x, y) end
                 elseif board.tileMap[i][j].state == "question" then
                     if imgQuestion then imgQuestion:draw(x, y) end
+                else
+                    if imgHidden then imgHidden:draw(x, y) end
                 end
-
             end
         end
     end
@@ -148,4 +165,14 @@ function DrawBoard()
     local cursorX = startX + (cursorPos.x - 1) * tileSize + 2
     local cursorY = startY + (cursorPos.y - 1) * tileSize + 2 + DeltaY(cursorPos.x, cursorPos.y)
     gfx.drawRect(cursorX, cursorY, tileSize - 3, tileSize - 3)
+end
+
+function CreateDroplet(x, y, power)
+    local newDroplet = {
+        pos   = {x = x, y = y},
+        power = power,
+        size  = 0,
+    }
+
+    dropletList[#dropletList + 1] = newDroplet
 end
