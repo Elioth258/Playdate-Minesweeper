@@ -61,7 +61,7 @@ function InitBoard(bannedPos)
 end
 function UpdateBoard()
     local function SearchTile(x, y)
-        if x < 1 or y < 1 or x > board.width or y > board.height or board.tileMap[y][x].reveal then
+        if x < 1 or y < 1 or x > board.width or y > board.height or board.tileMap[y][x].reveal or board.tileMap[y][x].state == "flag" or board.tileMap[y][x].state == "question" then
             return
         end
         board.tileMap[y][x].reveal = true
@@ -81,15 +81,37 @@ function UpdateBoard()
             InitBoard(cursorPos)
         end
 
+        local tile = board.tileMap[cursorPos.y][cursorPos.x]
+        if tile.reveal and tile.number > 0 then
+
+            local nbFlags = 0
+            for i = Clamp(cursorPos.x -1, 1, board.width), Clamp(cursorPos.x + 1, 1, board.width), 1 do
+                for j = Clamp(cursorPos.y -1, 1, board.height), Clamp(cursorPos.y + 1, 1, board.height), 1 do
+                    if board.tileMap[j][i].state == "flag" then nbFlags += 1 end
+                end
+            end
+            print(nbFlags)
+            if nbFlags == tile.number then
+                for i = -1, 1, 1 do
+                    for j = -1, 1, 1 do
+                        SearchTile(cursorPos.x + i, cursorPos.y + j)
+                    end
+                end
+            end
+        else
+            SearchTile(cursorPos.x, cursorPos.y)
+        end
+
         CreateDroplet(cursorPos.x, cursorPos.y, 1)
-        SearchTile(cursorPos.x, cursorPos.y)
     end
     if playdate.buttonJustPressed(playdate.kButtonB) and mapIsInitialised then
-        local txtState = board.tileMap[cursorPos.y][cursorPos.x].state
+        if board.tileMap[cursorPos.y][cursorPos.x].reveal == false then
+            local txtState = board.tileMap[cursorPos.y][cursorPos.x].state
 
-        if txtState == "none" then board.tileMap[cursorPos.y][cursorPos.x].state = "flag" end
-        if txtState == "flag" then board.tileMap[cursorPos.y][cursorPos.x].state = "question" end
-        if txtState == "question" then board.tileMap[cursorPos.y][cursorPos.x].state = "none" end
+            if txtState == "none"     then board.tileMap[cursorPos.y][cursorPos.x].state = "flag"     end
+            if txtState == "flag"     then board.tileMap[cursorPos.y][cursorPos.x].state = "question" end
+            if txtState == "question" then board.tileMap[cursorPos.y][cursorPos.x].state = "none"     end
+        end
     end
 
     if playdate.buttonJustPressed(playdate.kButtonUp) and cursorPos.y > 1 then
@@ -118,7 +140,6 @@ function DrawBoard()
         -- return math.sin((totalTime * 5) + dx + dy) * 1.05
     end
 
-    if not totalTime then return end
     gfx.setFont(smallFont)
 
     local startX = (screenWidth - (board.width * tileSize)) / 2
@@ -126,8 +147,8 @@ function DrawBoard()
 
     for i = 1, board.height, 1 do
         for j = 1, board.width, 1 do
-            local y = (startY + (i - 1) * tileSize) + DeltaY(i, j)
             local x = (startX + (j - 1) * tileSize)
+            local y = (startY + (i - 1) * tileSize) + DeltaY(i, j)
 
             for k, drop in ipairs(dropletList) do
                 local dist = Distance(drop.pos.x, drop.pos.y, j, i) - drop.size / tileSize
