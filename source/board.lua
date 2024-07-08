@@ -19,7 +19,9 @@ local board = {
 }
 local tileSize = 19
 
-local cursorPos = {x = math.ceil(board.width / 2), y = math.ceil(board.height / 2)}
+local cursorPosCur   = {x = math.ceil(board.width / 2), y = math.ceil(board.height / 2)}
+local cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
+local cursorSpeed    = 20
 
 local mapIsInitialised = false
 
@@ -82,54 +84,54 @@ function UpdateBoard()
     if playdate.buttonJustPressed(playdate.kButtonA) then
         if not mapIsInitialised then
             mapIsInitialised = true
-            InitBoard(cursorPos)
+            InitBoard(cursorPosCur)
         end
 
-        local tile = board.tileMap[cursorPos.y][cursorPos.x]
+        local tile = board.tileMap[cursorPosCur.y][cursorPosCur.x]
         if tile.reveal and tile.number > 0 and not (tile.state == "flag") and not (tile.state == "question") then
 
             local nbFlags = 0
-            for i = Clamp(cursorPos.x -1, 1, board.width), Clamp(cursorPos.x + 1, 1, board.width), 1 do
-                for j = Clamp(cursorPos.y -1, 1, board.height), Clamp(cursorPos.y + 1, 1, board.height), 1 do
+            for i = Clamp(cursorPosCur.x -1, 1, board.width), Clamp(cursorPosCur.x + 1, 1, board.width), 1 do
+                for j = Clamp(cursorPosCur.y -1, 1, board.height), Clamp(cursorPosCur.y + 1, 1, board.height), 1 do
                     if board.tileMap[j][i].state == "flag" then nbFlags += 1 end
                 end
             end
             if nbFlags == tile.number then
                 for i = -1, 1, 1 do
                     for j = -1, 1, 1 do
-                        SearchTile(cursorPos.x + i, cursorPos.y + j)
+                        SearchTile(cursorPosCur.x + i, cursorPosCur.y + j)
                     end
                 end
             end
         else
-            SearchTile(cursorPos.x, cursorPos.y)
+            SearchTile(cursorPosCur.x, cursorPosCur.y)
         end
 
-        CreateDroplet(cursorPos.x, cursorPos.y, 1)
+        CreateDroplet(cursorPosCur.x, cursorPosCur.y, 1)
     end
     if playdate.buttonJustPressed(playdate.kButtonB) and mapIsInitialised then
-        if board.tileMap[cursorPos.y][cursorPos.x].reveal == false then
-            local txtState = board.tileMap[cursorPos.y][cursorPos.x].state
+        if board.tileMap[cursorPosCur.y][cursorPosCur.x].reveal == false then
+            local txtState = board.tileMap[cursorPosCur.y][cursorPosCur.x].state
 
-            if txtState == "none"     then board.tileMap[cursorPos.y][cursorPos.x].state = "flag"     end
-            if txtState == "flag"     then board.tileMap[cursorPos.y][cursorPos.x].state = "question" end
-            if txtState == "question" then board.tileMap[cursorPos.y][cursorPos.x].state = "none"     end
+            if txtState == "none"     then board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "flag"     end
+            if txtState == "flag"     then board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "question" end
+            if txtState == "question" then board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "none"     end
 
-            UpdateTileImage(board.tileMap[cursorPos.y][cursorPos.x])
+            UpdateTileImage(board.tileMap[cursorPosCur.y][cursorPosCur.x])
         end
     end
 
-    if playdate.buttonJustPressed(playdate.kButtonUp) and cursorPos.y > 1 then
-        cursorPos.y -= 1
+    if playdate.buttonJustPressed(playdate.kButtonUp) and cursorPosCur.y > 1 then
+        cursorPosCur.y -= 1
     end
-    if playdate.buttonJustPressed(playdate.kButtonDown) and cursorPos.y < board.height then
-        cursorPos.y += 1
+    if playdate.buttonJustPressed(playdate.kButtonDown) and cursorPosCur.y < board.height then
+        cursorPosCur.y += 1
     end
-    if playdate.buttonJustPressed(playdate.kButtonLeft) and cursorPos.x > 1 then
-        cursorPos.x -= 1
+    if playdate.buttonJustPressed(playdate.kButtonLeft) and cursorPosCur.x > 1 then
+        cursorPosCur.x -= 1
     end
-    if playdate.buttonJustPressed(playdate.kButtonRight) and cursorPos.x < board.width then
-        cursorPos.x += 1
+    if playdate.buttonJustPressed(playdate.kButtonRight) and cursorPosCur.x < board.width then
+        cursorPosCur.x += 1
     end
 
     for i, drop in ipairs(dropletList) do
@@ -138,6 +140,9 @@ function UpdateBoard()
             table.remove(dropletList, i)
         end
     end
+
+    cursorPosDelta.x = SmoothValue(cursorPosDelta.x, cursorPosCur.x, cursorSpeed, deltaTime)
+    cursorPosDelta.y = SmoothValue(cursorPosDelta.y, cursorPosCur.y, cursorSpeed, deltaTime)
 end
 function DrawBoard()
     gfx.setFont(smallFont)
@@ -168,8 +173,8 @@ function DrawBoard()
         end
     end
 
-    local cursorX = startX + (cursorPos.x - 1) * tileSize + 12
-    local cursorY = startY + (cursorPos.y - 1) * tileSize + 10
+    local cursorX = startX + (cursorPosDelta.x - 1) * tileSize + 12
+    local cursorY = startY + (cursorPosDelta.y - 1) * tileSize + 10
     if imgCursor then imgCursor:draw(cursorX, cursorY) end
 end
 
