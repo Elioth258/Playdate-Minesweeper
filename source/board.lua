@@ -32,6 +32,7 @@ function InitBoard(bannedPos)
             reveal = false,
             bombed = false,
             number = 0,
+            image  = imgHidden
         }
         return newTile
     end
@@ -65,7 +66,9 @@ function UpdateBoard()
         if x < 1 or y < 1 or x > board.width or y > board.height or board.tileMap[y][x].reveal or board.tileMap[y][x].state == "flag" or board.tileMap[y][x].state == "question" then
             return
         end
+
         board.tileMap[y][x].reveal = true
+        UpdateTileImage(board.tileMap[y][x])
 
         if board.tileMap[y][x].number == 0 then
             for i = -1, 1, 1 do
@@ -111,6 +114,8 @@ function UpdateBoard()
             if txtState == "none"     then board.tileMap[cursorPos.y][cursorPos.x].state = "flag"     end
             if txtState == "flag"     then board.tileMap[cursorPos.y][cursorPos.x].state = "question" end
             if txtState == "question" then board.tileMap[cursorPos.y][cursorPos.x].state = "none"     end
+
+            UpdateTileImage(board.tileMap[cursorPos.y][cursorPos.x])
         end
     end
 
@@ -135,11 +140,6 @@ function UpdateBoard()
     end
 end
 function DrawBoard()
-    local function DeltaY(dx, dy)
-        return 0
-        -- return math.sin((totalTime * 5) + dx + dy) * 1.05
-    end
-
     gfx.setFont(smallFont)
 
     local startX = (screenWidth - (board.width * tileSize)) / 2
@@ -148,7 +148,7 @@ function DrawBoard()
     for i = 1, board.height, 1 do
         for j = 1, board.width, 1 do
             local x = (startX + (j - 1) * tileSize)
-            local y = (startY + (i - 1) * tileSize) + DeltaY(i, j)
+            local y = (startY + (i - 1) * tileSize)
 
             for k, drop in ipairs(dropletList) do
                 local dist = Distance(drop.pos.x, drop.pos.y, j, i) - drop.size / tileSize
@@ -163,28 +163,13 @@ function DrawBoard()
             if not mapIsInitialised then
                 if imgHidden then imgHidden:draw(x, y) end
             else
-
-                if board.tileMap[i][j].reveal then
-                    if imgEmpty then imgEmpty:draw(x, y) end
-
-                    if board.tileMap[i][j].bombed then
-                        if imgBomb then imgBomb:draw(x, y) end
-                    elseif board.tileMap[i][j].number > 0 then
-                        gfx.drawTextAligned(board.tileMap[i][j].number, x + tileSize / 2, y + tileSize / 4, kTextAlignment.center)
-                    end
-                elseif board.tileMap[i][j].state == "flag" then
-                    if imgFlag then imgFlag:draw(x, y) end
-                elseif board.tileMap[i][j].state == "question" then
-                    if imgQuestion then imgQuestion:draw(x, y) end
-                else
-                    if imgHidden then imgHidden:draw(x, y) end
-                end
+                board.tileMap[i][j].image:draw(x, y)
             end
         end
     end
 
     local cursorX = startX + (cursorPos.x - 1) * tileSize + 12
-    local cursorY = startY + (cursorPos.y - 1) * tileSize + 10 + DeltaY(cursorPos.x, cursorPos.y)
+    local cursorY = startY + (cursorPos.y - 1) * tileSize + 10
     if imgCursor then imgCursor:draw(cursorX, cursorY) end
 end
 
@@ -196,4 +181,27 @@ function CreateDroplet(x, y, power)
     }
 
     dropletList[#dropletList + 1] = newDroplet
+end
+function UpdateTileImage(tile)
+    tile.image  = gfx.image.new(tileSize + 1, tileSize + 1)
+
+    gfx.pushContext(tile.image)
+
+    if tile.reveal then
+        if imgEmpty then imgEmpty:draw(0, 0) end
+        if tile.bombed then
+            if imgBomb then imgBomb:draw(0, 0) end
+        elseif tile.number > 0 then
+            gfx.drawTextAligned(tile.number, tileSize / 2, tileSize / 4, kTextAlignment.center)
+        end
+    else
+        if imgHidden then imgHidden:draw(0, 0) end
+        if tile.state == "flag" then
+            if imgFlag then imgFlag:draw(0, 0) end
+        elseif tile.state == "question" then
+            if imgQuestion then imgQuestion:draw(0, 0) end
+        end
+    end
+
+    gfx.popContext()
 end
