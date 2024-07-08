@@ -3,6 +3,7 @@ import "audio"
 
 local gfx <const> = playdate.graphics
 
+local imgCursor   = gfx.image.new("images/Cursor")
 local imgQuestion = gfx.image.new("images/Tiles/Question")
 local imgHidden   = gfx.image.new("images/Tiles/Hidden")
 local imgEmpty    = gfx.image.new("images/Tiles/Empty")
@@ -182,9 +183,9 @@ function DrawBoard()
         end
     end
 
-    local cursorX = startX + (cursorPos.x - 1) * tileSize + 2
-    local cursorY = startY + (cursorPos.y - 1) * tileSize + 2 + DeltaY(cursorPos.x, cursorPos.y)
-    gfx.drawRect(cursorX, cursorY, tileSize - 3, tileSize - 3)
+    local cursorX = startX + (cursorPos.x - 1) * tileSize + 12
+    local cursorY = startY + (cursorPos.y - 1) * tileSize + 10 + DeltaY(cursorPos.x, cursorPos.y)
+    if imgCursor then imgCursor:draw(cursorX, cursorY) end
 end
 
 function CreateDroplet(x, y, power)
