@@ -10,7 +10,7 @@ local imgFlag     = gfx.image.new("images/Tiles/Flag")
 local imgBomb     = gfx.image.new("images/Tiles/Bomb")
 
 local board = {
-    width  = 10,
+    width  = 15,
     height = 10,
 
     maxBomb = 15,
@@ -18,7 +18,7 @@ local board = {
 }
 local tileSize = 19
 
-local cursorPos = {x = 5, y = 5}
+local cursorPos = {x = math.ceil(board.width / 2), y = math.ceil(board.height / 2)}
 
 local mapIsInitialised = false
 
@@ -82,7 +82,7 @@ function UpdateBoard()
         end
 
         local tile = board.tileMap[cursorPos.y][cursorPos.x]
-        if tile.reveal and tile.number > 0 then
+        if tile.reveal and tile.number > 0 and not (tile.state == "flag") and not (tile.state == "question") then
 
             local nbFlags = 0
             for i = Clamp(cursorPos.x -1, 1, board.width), Clamp(cursorPos.x + 1, 1, board.width), 1 do
@@ -90,7 +90,6 @@ function UpdateBoard()
                     if board.tileMap[j][i].state == "flag" then nbFlags += 1 end
                 end
             end
-            print(nbFlags)
             if nbFlags == tile.number then
                 for i = -1, 1, 1 do
                     for j = -1, 1, 1 do
@@ -117,13 +116,13 @@ function UpdateBoard()
     if playdate.buttonJustPressed(playdate.kButtonUp) and cursorPos.y > 1 then
         cursorPos.y -= 1
     end
-    if playdate.buttonJustPressed(playdate.kButtonDown) and cursorPos.y < board.width then
+    if playdate.buttonJustPressed(playdate.kButtonDown) and cursorPos.y < board.height then
         cursorPos.y += 1
     end
     if playdate.buttonJustPressed(playdate.kButtonLeft) and cursorPos.x > 1 then
         cursorPos.x -= 1
     end
-    if playdate.buttonJustPressed(playdate.kButtonRight) and cursorPos.x < board.height then
+    if playdate.buttonJustPressed(playdate.kButtonRight) and cursorPos.x < board.width then
         cursorPos.x += 1
     end
 
