@@ -24,6 +24,8 @@ if directlyGoInGame then
 
 end
 
+InitBorder()
+
 function playdate.update()
 	Update()
 	Draw()

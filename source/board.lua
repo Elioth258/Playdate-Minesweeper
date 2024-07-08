@@ -3,7 +3,12 @@ import "audio"
 
 local gfx <const> = playdate.graphics
 
-local imgCursor   = gfx.image.new("images/Cursor")
+local imgCursor = gfx.image.new("images/Cursor")
+
+local imgBorderHorizontal = gfx.image.new("images/Borders/Horizontal")
+local imgBorderVertical   = gfx.image.new("images/Borders/Vertical")
+local imgBorderCorner     = gfx.image.new("images/Borders/Corner")
+
 local imgQuestion = gfx.image.new("images/Tiles/Question")
 local imgHidden   = gfx.image.new("images/Tiles/Hidden")
 local imgEmpty    = gfx.image.new("images/Tiles/Empty")
@@ -17,7 +22,7 @@ local board = {
     maxBomb = 15,
     tileMap = {},
 }
-local tileSize = 19
+local tileSize = 20
 
 local cursorPosCur   = {x = math.ceil(board.width / 2), y = math.ceil(board.height / 2)}
 local cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
@@ -27,6 +32,36 @@ local mapIsInitialised = false
 
 local dropletList = {}
 
+local mapBorder = nil
+
+function InitBorder()
+    local horizontalBorder = gfx.image.new(board.width * tileSize, 8)
+    gfx.pushContext(horizontalBorder)
+    for i = 0, board.width, 1 do
+        if imgBorderHorizontal then imgBorderHorizontal:draw(tileSize * i, 0) end
+    end
+    gfx.popContext()
+
+    local verticalBorder = gfx.image.new(8, board.height * tileSize)
+    gfx.pushContext(verticalBorder)
+    for i = 0, board.height, 1 do
+        if imgBorderVertical then imgBorderVertical:draw(0, tileSize * i) end
+    end
+    gfx.popContext()
+
+    mapBorder = gfx.image.new(board.width * tileSize + 16, board.height * tileSize + 16)
+    gfx.pushContext(mapBorder)
+    if horizontalBorder then horizontalBorder:draw(8, 0) end
+    if horizontalBorder then horizontalBorder:draw(8, board.height * tileSize + 8) end
+    if verticalBorder   then verticalBorder:draw(0, 8) end
+    if verticalBorder   then verticalBorder:draw(board.width * tileSize + 8, 8) end
+
+    if imgBorderCorner then imgBorderCorner:draw(0, 0) end
+    if imgBorderCorner then imgBorderCorner:draw(board.width * tileSize + 8, 0) end
+    if imgBorderCorner then imgBorderCorner:draw(0, board.height * tileSize + 8) end
+    if imgBorderCorner then imgBorderCorner:draw(board.width * tileSize + 8, board.height * tileSize + 8) end
+    gfx.popContext()
+end
 function InitBoard(bannedPos)
     local function CreateTile()
         local newTile = {
@@ -136,7 +171,7 @@ function UpdateBoard()
 
     for i, drop in ipairs(dropletList) do
         drop.size += deltaTime * tileSize * 15
-        if drop.size > 250 then
+        if drop.size > 300 then
             table.remove(dropletList, i)
         end
     end
@@ -145,10 +180,10 @@ function UpdateBoard()
     cursorPosDelta.y = SmoothValue(cursorPosDelta.y, cursorPosCur.y, cursorSpeed, deltaTime)
 end
 function DrawBoard()
-    gfx.setFont(smallFont)
-
     local startX = (screenWidth - (board.width * tileSize)) / 2
     local startY = (screenHeight - (board.height * tileSize)) / 2
+
+    if mapBorder then mapBorder:draw(startX - 8, startY - 8) end
 
     for i = 1, board.height, 1 do
         for j = 1, board.width, 1 do
@@ -188,6 +223,7 @@ function CreateDroplet(x, y, power)
     dropletList[#dropletList + 1] = newDroplet
 end
 function UpdateTileImage(tile)
+    gfx.setFont(smallFont)
     tile.image  = gfx.image.new(tileSize + 1, tileSize + 1)
 
     gfx.pushContext(tile.image)
