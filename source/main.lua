@@ -9,9 +9,12 @@ import "audio"
 import "localization"
 import "saveManager"
 import "scroll"
+import "mainMenu"
 import "board"
 
 local gfx <const> = playdate.graphics
+
+local currentState = "Menu" -- Menu / Game
 
 local gameData = ReadGameData()
 locID     = gameData.locID
@@ -35,7 +38,11 @@ function Update()
 	deltaTime = playdate.getElapsedTime()
 	totalTime += deltaTime
 
-	UpdateBoard()
+	if currentState == "Menu" then
+		UpdateMainMenu()
+	elseif currentState == "Game" then
+		UpdateBoard()
+	end
 
 	playdate.resetElapsedTime()
 end
@@ -44,7 +51,11 @@ function Draw()
 	gfx.clear()
 	gfx.sprite.update()
 
-	DrawBoard()
+	if currentState == "Menu" then
+		DrawMainMenu()
+	elseif currentState == "Game" then
+		DrawBoard()
+	end
 
 	if showDebugInfo then
 		playdate.drawFPS(0, 0)
