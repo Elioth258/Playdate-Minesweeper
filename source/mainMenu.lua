@@ -44,7 +44,12 @@ function InitMenuBoxes()
     gfx.popContext()
 end
 function SetMenuType(newMenu)
-    subState = newMenu
+    if newMenu == "play" then
+        StartGame()
+        subState = "menu"
+    else
+        subState = newMenu
+    end
 end
 
 function UpdateMainMenu()
@@ -76,8 +81,6 @@ function UpdateMainMenu()
     if     subState == "menu" then    UpdateMenu()
     elseif subState == "rules" then   UpdateRules()
     elseif subState == "credits" then UpdateCredits() end
-
-    UpdateTransition()
 end
 function DrawMainMenu()
     local function DrawMenu()
@@ -103,6 +106,4 @@ function DrawMainMenu()
     if     subState == "menu" then    DrawMenu()
     elseif subState == "rules" then   DrawRules()
     elseif subState == "credits" then DrawCredits() end
-
-    DrawTransition()
 end

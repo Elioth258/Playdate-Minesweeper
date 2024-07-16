@@ -29,10 +29,9 @@ local cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
 local cursorSpeed    = 20
 
 local mapIsInitialised = false
+local mapBorder = nil
 
 local dropletList = {}
-
-local mapBorder = nil
 
 function InitBorder()
     local horizontalBorder = gfx.image.new(board.width * tileSize, 8)
@@ -97,6 +96,20 @@ function InitBoard(bannedPos)
             end
         end
     end
+end
+
+function StartGameBoard(width, height, maxBomb)
+    board.width    = width
+    board.height   = height
+    board.maxBomb  = maxBomb
+    board.tileMap  = {}
+
+    cursorPosCur   = {x = math.ceil(width / 2), y = math.ceil(height / 2)}
+    cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
+
+    mapIsInitialised = false
+    mapBorder = nil
+	InitBorder()
 end
 function UpdateBoard()
     local function SearchTile(x, y)

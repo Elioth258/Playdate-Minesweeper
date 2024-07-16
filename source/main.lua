@@ -9,11 +9,12 @@ import "audio"
 import "localization"
 import "saveManager"
 import "mainMenu"
+import "transition"
 import "board"
 
 local gfx <const> = playdate.graphics
 
-local currentState = "Menu" -- Menu / Game
+local currentState = "menu" -- menu / game
 
 local gameData = ReadGameData()
 locID     = gameData.locID
@@ -27,7 +28,11 @@ if directlyGoInGame then
 end
 
 InitMenuBoxes()
-InitBorder()
+
+function StartGame()
+	StartGameBoard(15, 10, 15)
+	currentState = "game"
+end
 
 function playdate.update()
 	Update()
@@ -38,11 +43,13 @@ function Update()
 	deltaTime = playdate.getElapsedTime()
 	totalTime += deltaTime
 
-	if currentState == "Menu" then
+	if currentState == "menu" then
 		UpdateMainMenu()
-	elseif currentState == "Game" then
+	elseif currentState == "game" then
 		UpdateBoard()
 	end
+
+	UpdateTransition()
 
 	playdate.resetElapsedTime()
 end
@@ -51,11 +58,12 @@ function Draw()
 	gfx.clear()
 	gfx.sprite.update()
 
-	if currentState == "Menu" then
+	if currentState == "menu" then
 		DrawMainMenu()
-	elseif currentState == "Game" then
+	elseif currentState == "game" then
 		DrawBoard()
 	end
+	DrawTransition()
 
 	if showDebugInfo then
 		playdate.drawFPS(0, 0)
