@@ -176,8 +176,8 @@ function UpdateBoard()
         end
     end
 
-    cursorPosDelta.x = SmoothValue(cursorPosDelta.x, cursorPosCur.x, cursorSpeed, deltaTime)
-    cursorPosDelta.y = SmoothValue(cursorPosDelta.y, cursorPosCur.y, cursorSpeed, deltaTime)
+    cursorPosDelta.x = SmoothValue(cursorPosDelta.x, cursorPosCur.x, cursorSpeed)
+    cursorPosDelta.y = SmoothValue(cursorPosDelta.y, cursorPosCur.y, cursorSpeed)
 end
 function DrawBoard()
     local startX = (screenWidth - (board.width * tileSize)) / 2

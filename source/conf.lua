@@ -25,7 +25,7 @@ function Lerp(start, finish, t)
     return start + t * (finish - start)
 end
 
-function SmoothValue(smoothedValue, desiredValue, speed, deltaTime)
+function SmoothValue(smoothedValue, desiredValue, speed)
 	local returnValue = smoothedValue + (desiredValue - smoothedValue) * speed * deltaTime
 	if math.abs(desiredValue - smoothedValue) < 0.005 then returnValue = desiredValue end
 	return returnValue

@@ -1,6 +1,14 @@
 local ssp <const> = playdate.sound.sampleplayer
 
--- soundMainTheme = ssp.new("audios/MainTheme")
+soundSwipes = {
+    ssp.new("audios/Swipe1"),
+    ssp.new("audios/Swipe2"),
+    ssp.new("audios/Swipe3"),
+}
+
+soundMainTheme  = ssp.new("audios/MainTheme")
+soundMenuSelect = ssp.new("audios/MenuSelect")
+soundMenuGoBack = ssp.new("audios/MenuGoBack")
 
 function PlayAudioTable(soundTable, loop)
     if loop == nil then loop = 1 end

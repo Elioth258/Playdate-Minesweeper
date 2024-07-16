@@ -8,7 +8,6 @@ import "conf"
 import "audio"
 import "localization"
 import "saveManager"
-import "scroll"
 import "mainMenu"
 import "board"
 
@@ -27,6 +26,7 @@ if directlyGoInGame then
 
 end
 
+InitMenuBoxes()
 InitBorder()
 
 function playdate.update()
