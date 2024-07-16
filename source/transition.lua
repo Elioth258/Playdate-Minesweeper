@@ -14,8 +14,10 @@ function UpdateTransition()
     if isTransitionning then
         if deltaTime then timer += deltaTime * 2.5 end
 
-        if timer >= 1 then
+        if timer >= 0.5 and not (nextMenuType == "none") then
             SetMenuType(nextMenuType)
+            nextMenuType = "none"
+        elseif timer >= 1 then
             isTransitionning = false
         end
     end
