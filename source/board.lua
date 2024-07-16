@@ -84,8 +84,9 @@ function InitBoard(bannedPos)
     while curBomb < board.maxBomb do
         local x = math.random(1, board.width)
         local y = math.random(1, board.height)
+        local forbidenPos = (x >= bannedPos.x - 1) and (x <= bannedPos.x + 1) and (y >= bannedPos.y - 1) and (y <= bannedPos.y + 1)
 
-        if not board.tileMap[y][x].bombed and not (x == bannedPos.x and y == bannedPos.y) then
+        if not board.tileMap[y][x].bombed and not forbidenPos then
             board.tileMap[y][x].bombed = true
             curBomb = curBomb + 1
 

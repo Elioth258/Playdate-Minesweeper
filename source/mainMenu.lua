@@ -52,6 +52,9 @@ function SetMenuType(newMenu)
     end
 end
 
+function StartMainMenu()
+    InitMenuBoxes()
+end
 function UpdateMainMenu()
     local function UpdateMenu()
         if playdate.buttonJustPressed(playdate.kButtonUp) and menuMainI > 1 then

@@ -23,15 +23,15 @@ muteMusic = gameData.muteMusic
 playdate.setCrankSoundsDisabled(not playdate.isSimulator)
 playdate.resetElapsedTime()
 
-if directlyGoInGame then
-
-end
-
-InitMenuBoxes()
+StartMainMenu()
 
 function StartGame()
-	StartGameBoard(15, 10, 15)
+	StartGameBoard(5, 5, 5)
 	currentState = "game"
+end
+
+if directlyGoInGame then
+	StartGame()
 end
 
 function playdate.update()
