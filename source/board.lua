@@ -54,8 +54,8 @@ function InitBorder()
     gfx.pushContext(mapBorder)
     if horizontalBorder then horizontalBorder:drawRotated(board.width * tileSize / 2 + 8, 4, 0) end
     if horizontalBorder then horizontalBorder:drawRotated(board.width * tileSize / 2 + 8, board.height * tileSize + 12, 180) end
-    if verticalBorder then verticalBorder:drawRotated(4, board.height * tileSize / 2 + 8, 270) end
-    if verticalBorder then verticalBorder:drawRotated(board.width * tileSize + 12, board.height * tileSize / 2 + 8, 90) end
+    if verticalBorder   then verticalBorder:drawRotated(4, board.height * tileSize / 2 + 8, 270) end
+    if verticalBorder   then verticalBorder:drawRotated(board.width * tileSize + 12, board.height * tileSize / 2 + 8, 90) end
 
     if imgBorderCorner then imgBorderCorner:drawRotated(4, 4, 0) end
     if imgBorderCorner then imgBorderCorner:drawRotated(board.width * tileSize + 12, 4, 90) end

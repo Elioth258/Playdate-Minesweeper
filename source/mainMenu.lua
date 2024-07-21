@@ -5,6 +5,8 @@ import "audio"
 local gfx <const> = playdate.graphics
 
 local imgBackground = gfx.image.new("images/Menu/Background")
+local imgBallEmpty  = gfx.image.new("images/Menu/RuleBallEmpty")
+local imgBallFull   = gfx.image.new("images/Menu/RuleBallFull")
 local imgMenuBoxes = {}
 local imgSelection = nil
 
@@ -13,7 +15,10 @@ local backgroundDeltaX = 0
 local menuMainI       = 1
 local menuMainSmoothI = 1
 
-local subState = "menu" -- menu / rules / credits
+local ruleLocs = {allLoc.ruleMainGoal, allLoc.ruleBoard, allLoc.ruleClick, allLoc.ruleNumber, allLoc.ruleDeduce, allLoc.ruleMarking, allLoc.ruleUncovering}
+local ruleI    = 1
+
+local subState = "rules" -- menu / rules / credits
 
 function ChangeLanguage()
     locID = locID + 1
@@ -71,11 +76,14 @@ function UpdateMainMenu()
             if menuMainI == 4 then LaunchTransition("credits") end
         end
         menuMainSmoothI = SmoothValue(menuMainSmoothI, menuMainI, 10)
-
-        if deltaTime then backgroundDeltaX = (backgroundDeltaX + deltaTime * 30) % screenWidth  end
     end
     local function UpdateRules()
-        
+        if playdate.buttonJustPressed(playdate.kButtonRight) and ruleI < #ruleLocs then
+            ruleI += 1
+        end
+        if playdate.buttonJustPressed(playdate.kButtonLeft) and ruleI > 1 then
+            ruleI -= 1
+        end
     end
     local function UpdateCredits()
         
@@ -84,6 +92,8 @@ function UpdateMainMenu()
     if     subState == "menu" then    UpdateMenu()
     elseif subState == "rules" then   UpdateRules()
     elseif subState == "credits" then UpdateCredits() end
+    
+    if deltaTime then backgroundDeltaX = (backgroundDeltaX + deltaTime * 30) % screenWidth  end
 end
 function DrawMainMenu()
     local function DrawMenu()
@@ -97,7 +107,18 @@ function DrawMainMenu()
         if imgSelection then imgSelection:drawCentered(screenWidth / 2, 50 + menuMainSmoothI * 40) end
     end
     local function DrawRules()
+        for i = 1, #ruleLocs, 1 do
+            local ballX = ((screenWidth / 2) - (#ruleLocs * 6)) + (i * 12) - 6
+            local ballY = screenHeight - 10
+            local imgBall = i == ruleI and imgBallFull or imgBallEmpty
 
+            if imgBall then imgBall:drawCentered(ballX, ballY) end
+        end
+
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(5, 20, 240, 200)
+        gfx.setFont(bigFont)
+        gfx.drawTextInRect(ruleLocs[ruleI][locID], 10, 30, 230, 185)
     end
     local function DrawCredits()
 

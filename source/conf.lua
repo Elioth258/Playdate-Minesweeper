@@ -9,7 +9,7 @@ deltaTime = 0
 totalTime = 0
 muteMusic        = false
 showDebugInfo    = true
-directlyGoInGame = true
+directlyGoInGame = false
 
 function Clamp(value, min, max)
 	if value < min then
