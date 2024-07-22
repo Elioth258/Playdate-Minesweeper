@@ -62,11 +62,11 @@ function OutlinedRectangle(width, height, lineWidth)
 end
 
 function OutlinedText(rawText, font)
+    gfx.setFont(font)
     local width, height = gfx.getTextSize(rawText)
     local text = gfx.image.new(width + 3, height + 3)
 
     gfx.pushContext(text)
-    gfx.setFont(font)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     for i = 0, 2, 1 do
         for j = 0, 2, 1 do

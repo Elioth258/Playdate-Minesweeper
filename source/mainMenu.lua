@@ -9,7 +9,7 @@ local imgBallEmpty  = gfx.image.new("images/Menu/RuleBallEmpty")
 local imgBallFull   = gfx.image.new("images/Menu/RuleBallFull")
 local imgMenuBoxes = {}
 local imgSelection = nil
-local imgMainTitle = OutlinedText(allLoc.mainTitle[locID])
+local imgMainTitle = OutlinedText(allLoc.mainTitle[locID], bigFont)
 local imgRuleBackground = OutlinedRectangle(244, 202, 4)
 
 local backgroundDeltaX = 0
@@ -26,6 +26,7 @@ function ChangeLanguage()
     locID = locID + 1
     if locID > #locISO then locID = 1 end
     InitMenuBoxes()
+    imgMainTitle = OutlinedText(allLoc.mainTitle[locID])
 end
 function InitMenuBoxes()
     local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules, allLoc.mainCredits}
