@@ -9,6 +9,7 @@ local imgBallEmpty  = gfx.image.new("images/Menu/RuleBallEmpty")
 local imgBallFull   = gfx.image.new("images/Menu/RuleBallFull")
 local imgMenuBoxes = {}
 local imgSelection = nil
+local imgMainTitle = OutlinedText(allLoc.mainTitle[locID])
 local imgRuleBackground = OutlinedRectangle(244, 202, 4)
 
 local backgroundDeltaX = 0
@@ -92,8 +93,7 @@ function UpdateMainMenu()
 end
 function DrawMainMenu()
     local function DrawMenu()
-        gfx.setFont(bigFont)
-        gfx.drawTextAligned(allLoc.mainTitle[locID], screenWidth / 2, 30, kTextAlignment.center)
+        if imgMainTitle then imgMainTitle:drawCentered(screenWidth / 2, 30) end
 
         for i, menuBox in ipairs(imgMenuBoxes) do
             menuBox:drawCentered(screenWidth / 2, 50 + i * 40)
