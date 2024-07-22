@@ -1,9 +1,10 @@
+local gfx <const> = playdate.graphics
 
 screenWidth  = 400
 screenHeight = 240
 
-smallFont = playdate.graphics.font.new("fonts/Nontendo-Light")
-bigFont   = playdate.graphics.font.new("fonts/Nontendo-Light-2x")
+smallFont = gfx.font.new("fonts/Nontendo-Light")
+bigFont   = gfx.font.new("fonts/Nontendo-Light-2x")
 
 deltaTime = 0
 totalTime = 0
@@ -44,4 +45,18 @@ function Direction(x1, y1, x2, y2)
         dir.dy = dir.dy / length
     end
     return dir
+end
+
+function OutlinedRectangle(width, height, lineWidth)
+    local image = gfx.image.new(width, height)
+
+    gfx.pushContext(image)
+    gfx.setLineWidth(lineWidth)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(0, 0, width, height)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRect(0, 0, width, height)
+    gfx.popContext()
+
+    return image
 end

@@ -9,6 +9,7 @@ local imgBallEmpty  = gfx.image.new("images/Menu/RuleBallEmpty")
 local imgBallFull   = gfx.image.new("images/Menu/RuleBallFull")
 local imgMenuBoxes = {}
 local imgSelection = nil
+local imgRuleBackground = OutlinedRectangle(244, 202, 4)
 
 local backgroundDeltaX = 0
 
@@ -18,7 +19,7 @@ local menuMainSmoothI = 1
 local ruleLocs = {allLoc.ruleMainGoal, allLoc.ruleBoard, allLoc.ruleClick, allLoc.ruleNumber, allLoc.ruleDeduce, allLoc.ruleMarking, allLoc.ruleUncovering}
 local ruleI    = 1
 
-local subState = "rules" -- menu / rules / credits
+local subState = "menu" -- menu / rules / credits
 
 function ChangeLanguage()
     locID = locID + 1
@@ -28,24 +29,18 @@ end
 function InitMenuBoxes()
     local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules, allLoc.mainCredits}
 
+    gfx.setFont(bigFont)
     for i = 1, 4, 1 do
-        imgMenuBoxes[i] = gfx.image.new(145, 35)
+        imgMenuBoxes[i] = OutlinedRectangle(145, 35, 1)
         gfx.pushContext(imgMenuBoxes[i])
-
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(0, 0, 145, 35)
-        gfx.setColor(gfx.kColorBlack)
-        gfx.drawRect(0, 0, 145, 35)
-        gfx.setFont(bigFont)
         gfx.drawTextAligned(boxLoc[i][locID], 145 / 2, 8, kTextAlignment.center)
-
         gfx.popContext()
     end
 
     imgSelection = gfx.image.new(151, 41)
     gfx.pushContext(imgSelection)
+    gfx.setLineWidth(4)
     gfx.drawRect(0, 0, 151, 41)
-    gfx.drawRect(1, 1, 149, 39)
     gfx.popContext()
 end
 function SetMenuType(newMenu)
@@ -98,7 +93,7 @@ end
 function DrawMainMenu()
     local function DrawMenu()
         gfx.setFont(bigFont)
-        gfx.drawTextAligned("MINESWEEPER", screenWidth / 2, 30, kTextAlignment.center)
+        gfx.drawTextAligned(allLoc.mainTitle[locID], screenWidth / 2, 30, kTextAlignment.center)
 
         for i, menuBox in ipairs(imgMenuBoxes) do
             menuBox:drawCentered(screenWidth / 2, 50 + i * 40)
@@ -115,8 +110,7 @@ function DrawMainMenu()
             if imgBall then imgBall:drawCentered(ballX, ballY) end
         end
 
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(5, 20, 240, 200)
+        if imgRuleBackground then imgRuleBackground:draw(3, 19) end
         gfx.setFont(bigFont)
         gfx.drawTextInRect(ruleLocs[ruleI][locID], 10, 30, 230, 185)
     end
