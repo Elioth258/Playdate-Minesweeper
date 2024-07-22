@@ -137,8 +137,8 @@ function DrawMainMenu()
 
     end
 
-    -- if imgBackground then imgBackground:draw(backgroundDeltaX, 0) end
-    -- if imgBackground then imgBackground:draw(backgroundDeltaX - screenWidth, 0) end
+    if imgBackground then imgBackground:draw(backgroundDeltaX, 0) end
+    if imgBackground then imgBackground:draw(backgroundDeltaX - screenWidth, 0) end
 
     if     subState == "menu" then    DrawMenu()
     elseif subState == "rules" then   DrawRules()
