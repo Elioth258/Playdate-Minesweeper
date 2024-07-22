@@ -7,9 +7,18 @@ local gfx <const> = playdate.graphics
 local imgBackground = gfx.image.new("images/Menu/Background")
 local imgBallEmpty  = gfx.image.new("images/Menu/RuleBallEmpty")
 local imgBallFull   = gfx.image.new("images/Menu/RuleBallFull")
+
+local imgRuleMainGoal   = gfx.image.new("images/Menu/Rules/MainGoal")
+local imgRuleBoard      = gfx.image.new("images/Menu/Rules/Board")
+local imgRuleClick      = gfx.image.new("images/Menu/Rules/Click")
+local imgRuleNumber     = gfx.image.new("images/Menu/Rules/Number")
+local imgRuleDeduce     = gfx.image.new("images/Menu/Rules/Deduce")
+local imgRuleMarking    = gfx.image.new("images/Menu/Rules/Marking")
+local imgRuleUncovering = gfx.image.new("images/Menu/Rules/Uncovering")
+
 local imgMenuBoxes = {}
 local imgSelection = nil
-local imgMainTitle = OutlinedText(allLoc.mainTitle[locID], bigFont)
+local imgMainTitle      = OutlinedText(allLoc.mainTitle[locID], bigFont)
 local imgRuleBackground = OutlinedRectangle(244, 202, 4)
 
 local backgroundDeltaX = 0
@@ -18,9 +27,10 @@ local menuMainI       = 1
 local menuMainSmoothI = 1
 
 local ruleLocs = {allLoc.ruleMainGoal, allLoc.ruleBoard, allLoc.ruleClick, allLoc.ruleNumber, allLoc.ruleDeduce, allLoc.ruleMarking, allLoc.ruleUncovering}
+local ruleImgs = {imgRuleMainGoal, imgRuleBoard, imgRuleClick, imgRuleNumber, imgRuleDeduce, imgRuleMarking, imgRuleUncovering}
 local ruleI    = 1
 
-local subState = "menu" -- menu / rules / credits
+local subState = "rules" -- menu / rules / credits
 
 function ChangeLanguage()
     locID = locID + 1
@@ -81,6 +91,11 @@ function UpdateMainMenu()
         if playdate.buttonJustPressed(playdate.kButtonLeft) and ruleI > 1 then
             ruleI -= 1
         end
+
+        if playdate.buttonJustPressed(playdate.kButtonB) then
+            PlayAudio(soundMenuSelect)
+            LaunchTransition("menu")
+        end
     end
     local function UpdateCredits()
         
@@ -114,13 +129,16 @@ function DrawMainMenu()
         if imgRuleBackground then imgRuleBackground:draw(3, 19) end
         gfx.setFont(bigFont)
         gfx.drawTextInRect(ruleLocs[ruleI][locID], 10, 30, 230, 185)
+
+        local ruleToDraw = ruleImgs[ruleI]
+        if ruleToDraw then ruleToDraw:drawCentered(325, screenHeight / 2) end
     end
     local function DrawCredits()
 
     end
 
-    if imgBackground then imgBackground:draw(backgroundDeltaX, 0) end
-    if imgBackground then imgBackground:draw(backgroundDeltaX - screenWidth, 0) end
+    -- if imgBackground then imgBackground:draw(backgroundDeltaX, 0) end
+    -- if imgBackground then imgBackground:draw(backgroundDeltaX - screenWidth, 0) end
 
     if     subState == "menu" then    DrawMenu()
     elseif subState == "rules" then   DrawRules()
