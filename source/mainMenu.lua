@@ -24,13 +24,24 @@ local imgRuleBackground = OutlinedRectangle(244, 202, 4)
 local backgroundDeltaX = 0
 
 local menuMainI       = 1
+local menuMainMaxI    = 3
 local menuMainSmoothI = 1
 
 local ruleLocs = {allLoc.ruleMainGoal, allLoc.ruleBoard, allLoc.ruleClick, allLoc.ruleNumber, allLoc.ruleDeduce, allLoc.ruleMarking, allLoc.ruleUncovering}
 local ruleImgs = {imgRuleMainGoal, imgRuleBoard, imgRuleClick, imgRuleNumber, imgRuleDeduce, imgRuleMarking, imgRuleUncovering}
 local ruleI    = 1
 
-local subState = "rules" -- menu / rules / credits
+local subState = "menu" -- menu / rules / credits
+local menu = playdate.getSystemMenu()
+
+function MuteMusic(callback)
+    if callback then
+        StopAudio(soundMainTheme)
+    else
+        PlayAudio(soundMainTheme, 0)
+    end
+    muteMusic = callback
+end
 
 function ChangeLanguage()
     locID = locID + 1
@@ -42,7 +53,7 @@ function InitMenuBoxes()
     local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules, allLoc.mainCredits}
 
     gfx.setFont(bigFont)
-    for i = 1, 4, 1 do
+    for i = 1, menuMainMaxI, 1 do
         imgMenuBoxes[i] = OutlinedRectangle(145, 35, 1)
         gfx.pushContext(imgMenuBoxes[i])
         gfx.drawTextAligned(boxLoc[i][locID], 145 / 2, 8, kTextAlignment.center)
@@ -65,14 +76,19 @@ function SetMenuType(newMenu)
 end
 
 function StartMainMenu()
+    menu:addCheckmarkMenuItem("Mute music", muteMusic, MuteMusic)
     InitMenuBoxes()
+
+    if not muteMusic then
+        PlayAudio(soundMainTheme, 0)
+    end
 end
 function UpdateMainMenu()
     local function UpdateMenu()
         if playdate.buttonJustPressed(playdate.kButtonUp) and menuMainI > 1 then
             PlayAudioTable(soundSwipes)
             menuMainI = menuMainI - 1
-        elseif playdate.buttonJustPressed(playdate.kButtonDown) and menuMainI < 4 then
+        elseif playdate.buttonJustPressed(playdate.kButtonDown) and menuMainI < menuMainMaxI then
             PlayAudioTable(soundSwipes)
             menuMainI = menuMainI + 1
         elseif playdate.buttonJustPressed(playdate.kButtonA) then
@@ -80,15 +96,17 @@ function UpdateMainMenu()
             if menuMainI == 1 then LaunchTransition("play")  end
             if menuMainI == 2 then ChangeLanguage()            end
             if menuMainI == 3 then LaunchTransition("rules")   end
-            if menuMainI == 4 then LaunchTransition("credits") end
+            -- if menuMainI == 4 then LaunchTransition("credits") end
         end
         menuMainSmoothI = SmoothValue(menuMainSmoothI, menuMainI, 10)
     end
     local function UpdateRules()
         if playdate.buttonJustPressed(playdate.kButtonRight) and ruleI < #ruleLocs then
+            PlayAudioTable(soundSwipes)
             ruleI += 1
         end
         if playdate.buttonJustPressed(playdate.kButtonLeft) and ruleI > 1 then
+            PlayAudioTable(soundSwipes)
             ruleI -= 1
         end
 
@@ -97,14 +115,18 @@ function UpdateMainMenu()
             LaunchTransition("menu")
         end
     end
-    local function UpdateCredits()
-        
-    end
+    -- local function UpdateCredits()
+  
+    --     if playdate.buttonJustPressed(playdate.kButtonB) then
+    --         PlayAudio(soundMenuSelect)
+    --         LaunchTransition("menu")
+    --     end
+    -- end
 
     if     subState == "menu" then    UpdateMenu()
-    elseif subState == "rules" then   UpdateRules()
-    elseif subState == "credits" then UpdateCredits() end
-    
+    elseif subState == "rules" then   UpdateRules() end
+    -- elseif subState == "credits" then UpdateCredits() end
+
     if deltaTime then backgroundDeltaX = (backgroundDeltaX + deltaTime * 30) % screenWidth  end
 end
 function DrawMainMenu()
@@ -133,14 +155,14 @@ function DrawMainMenu()
         local ruleToDraw = ruleImgs[ruleI]
         if ruleToDraw then ruleToDraw:drawCentered(325, screenHeight / 2) end
     end
-    local function DrawCredits()
+    -- local function DrawCredits()
 
-    end
+    -- end
 
     if imgBackground then imgBackground:draw(backgroundDeltaX, 0) end
     if imgBackground then imgBackground:draw(backgroundDeltaX - screenWidth, 0) end
 
     if     subState == "menu" then    DrawMenu()
-    elseif subState == "rules" then   DrawRules()
-    elseif subState == "credits" then DrawCredits() end
+    elseif subState == "rules" then   DrawRules() end
+    -- elseif subState == "credits" then DrawCredits() end
 end
