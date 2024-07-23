@@ -28,6 +28,8 @@ local cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
 local cursorSpeed    = 20
 
 local tileLeftToWin = 0
+local flagLeft      = 0
+
 local gameState = "none" -- none / win / lose
 
 local mapIsInitialised = false
@@ -108,6 +110,7 @@ function StartGameBoard(width, height, maxBomb)
     board.tileMap  = {}
 
     tileLeftToWin = width * height - maxBomb
+    flagLeft = maxBomb
     gameState = "none"
 
     cursorPosCur   = {x = math.ceil(width / 2), y = math.ceil(height / 2)}
@@ -149,10 +152,10 @@ function UpdateBoard()
                 mapIsInitialised = true
                 InitBoard(cursorPosCur)
             end
-    
+
             local tile = board.tileMap[cursorPosCur.y][cursorPosCur.x]
             if tile.reveal and tile.number > 0 and not (tile.state == "flag") and not (tile.state == "question") then
-    
+
                 local nbFlags = 0
                 for i = Clamp(cursorPosCur.x -1, 1, board.width), Clamp(cursorPosCur.x + 1, 1, board.width), 1 do
                     for j = Clamp(cursorPosCur.y -1, 1, board.height), Clamp(cursorPosCur.y + 1, 1, board.height), 1 do
@@ -169,27 +172,35 @@ function UpdateBoard()
             else
                 SearchTile(cursorPosCur.x, cursorPosCur.y)
             end
-    
+
             CreateDroplet(cursorPosCur.x, cursorPosCur.y, 1)
-    
+
             if gameState == "win" then
-                
+                Win()
             elseif gameState == "lose" then
-                
+                Lose()
             end
         end
         if playdate.buttonJustPressed(playdate.kButtonB) and mapIsInitialised then
             if board.tileMap[cursorPosCur.y][cursorPosCur.x].reveal == false then
                 local txtState = board.tileMap[cursorPosCur.y][cursorPosCur.x].state
-    
-                if txtState == "none"     then board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "flag"     end
-                if txtState == "flag"     then board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "question" end
-                if txtState == "question" then board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "none"     end
-    
+
+                if txtState == "none" then
+                    board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "flag"
+                    flagLeft -= 1
+                end
+                if txtState == "flag" then
+                    board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "question"
+                    flagLeft += 1
+                end
+                if txtState == "question" then
+                    board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "none"
+                end
+
                 UpdateTileImage(board.tileMap[cursorPosCur.y][cursorPosCur.x])
             end
         end
-    
+
         if playdate.buttonJustPressed(playdate.kButtonUp) and cursorPosCur.y > 1 then
             cursorPosCur.y -= 1
         end
@@ -243,6 +254,9 @@ function DrawBoard()
         end
     end
 
+    gfx.setFont(smallFont)
+    gfx.drawTextAligned(tostring(flagLeft), startX - 20, screenHeight / 2 + 5, kTextAlignment.right)
+
     if gameState == "none" then
         local cursorX = startX + (cursorPosDelta.x - 1) * tileSize + 12
         local cursorY = startY + (cursorPosDelta.y - 1) * tileSize + 10
@@ -282,4 +296,18 @@ function UpdateTileImage(tile)
     end
 
     gfx.popContext()
+end
+
+function Win()
+
+end
+function Lose()
+    for i = 1, board.height, 1 do
+        for j = 1, board.width, 1 do
+            if board.tileMap[i][j].bombed and not (board.tileMap[i][j].state == "flag") then
+                board.tileMap[i][j].reveal = true
+                UpdateTileImage(board.tileMap[i][j])
+            end
+        end
+    end
 end
