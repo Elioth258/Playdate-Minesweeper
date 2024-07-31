@@ -34,8 +34,27 @@ local gameState = "none" -- none / win / lose
 
 local mapIsInitialised = false
 local mapBorder = nil
+local imgCross  = nil
 
 local dropletList = {}
+
+function GenerateCross()
+    imgCross = gfx.image.new(18, 18)
+    gfx.pushContext(imgCross)
+
+    gfx.setLineWidth(4)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.drawLine(2, 2, 16, 16)
+    gfx.drawLine(2, 16, 16, 2)
+
+    gfx.setLineWidth(2)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawLine(2, 2, 16, 16)
+    gfx.drawLine(2, 16, 16, 2)
+
+    gfx.popContext()
+end
+GenerateCross()
 
 function InitBorder()
     local horizontalBorder = gfx.image.new(board.width * tileSize, 8)
@@ -129,6 +148,8 @@ function UpdateBoard()
         board.tileMap[y][x].reveal = true
         UpdateTileImage(board.tileMap[y][x])
         if board.tileMap[y][x].bombed then
+            cursorPosCur.x = x
+            cursorPosCur.y = y
             gameState = "lose"
         else
             tileLeftToWin -= 1
@@ -297,16 +318,25 @@ function UpdateTileImage(tile)
 
     gfx.popContext()
 end
+function CrossTileImage(tile)
+    gfx.pushContext(tile.image)
+    if imgCross then imgCross:draw(0, 1) end
+    gfx.popContext()
+end
 
 function Win()
 
 end
 function Lose()
-    for i = 1, board.height, 1 do
-        for j = 1, board.width, 1 do
-            if board.tileMap[i][j].bombed and not (board.tileMap[i][j].state == "flag") then
-                board.tileMap[i][j].reveal = true
-                UpdateTileImage(board.tileMap[i][j])
+    for y = 1, board.height, 1 do
+        for x = 1, board.width, 1 do
+            local tile = board.tileMap[y][x]
+            if tile.bombed and not (tile.state == "flag") then
+                tile.reveal = true
+                UpdateTileImage(tile)
+            end
+            if (tile.state == "flag" and not tile.bombed) or (cursorPosCur.x == x and cursorPosCur.y == y) then
+                CrossTileImage(tile)
             end
         end
     end
