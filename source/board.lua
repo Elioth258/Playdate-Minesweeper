@@ -141,15 +141,14 @@ function StartGameBoard(width, height, maxBomb)
 end
 function UpdateBoard()
     local function SearchTile(x, y)
-        if x < 1 or y < 1 or x > board.width or y > board.height or board.tileMap[y][x].reveal or board.tileMap[y][x].state == "flag" or board.tileMap[y][x].state == "question" then
-            return
-        end
+        if x < 1 or y < 1 or x > board.width or y > board.height then return end
+        local tile = board.tileMap[y][x]
+        if tile.reveal or tile.state == "flag" or tile.state == "question" then return end
 
-        board.tileMap[y][x].reveal = true
-        UpdateTileImage(board.tileMap[y][x])
-        if board.tileMap[y][x].bombed then
-            cursorPosCur.x = x
-            cursorPosCur.y = y
+        tile.reveal = true
+        UpdateTileImage(tile)
+        if tile.bombed then
+            CrossTileImage(tile)
             gameState = "lose"
         else
             tileLeftToWin -= 1
@@ -158,7 +157,7 @@ function UpdateBoard()
             end
         end
 
-        if board.tileMap[y][x].number == 0 then
+        if tile.number == 0 then
             for i = -1, 1, 1 do
                 for j = -1, 1, 1 do
                     SearchTile(x + i, y + j)
@@ -331,11 +330,11 @@ function Lose()
     for y = 1, board.height, 1 do
         for x = 1, board.width, 1 do
             local tile = board.tileMap[y][x]
-            if tile.bombed and not (tile.state == "flag") then
+            if tile.bombed and not (tile.state == "flag") and not tile.reveal then
                 tile.reveal = true
                 UpdateTileImage(tile)
             end
-            if (tile.state == "flag" and not tile.bombed) or (cursorPosCur.x == x and cursorPosCur.y == y) then
+            if tile.state == "flag" and not tile.bombed then
                 CrossTileImage(tile)
             end
         end
