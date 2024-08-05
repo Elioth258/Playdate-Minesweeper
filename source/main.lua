@@ -11,6 +11,7 @@ import "saveManager"
 import "mainMenu"
 import "transition"
 import "board"
+import "UI"
 
 local gfx <const> = playdate.graphics
 

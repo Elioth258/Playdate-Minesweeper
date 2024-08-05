@@ -1,5 +1,6 @@
 import "conf"
 import "audio"
+import "UI"
 
 local gfx <const> = playdate.graphics
 
@@ -83,6 +84,8 @@ function InitBorder()
     if imgBorderCorner then imgBorderCorner:drawRotated(4, board.height * tileSize + 12, 270) end
     if imgBorderCorner then imgBorderCorner:drawRotated(board.width * tileSize + 12, board.height * tileSize + 12, 180) end
     gfx.popContext()
+
+    InitUIBorder(board.height, tileSize)
 end
 function InitBoard(bannedPos)
     local function CreateTile()
@@ -138,6 +141,7 @@ function StartGameBoard(width, height, maxBomb)
     mapIsInitialised = false
     mapBorder = nil
 	InitBorder()
+    UpdateFlagLeftUI(flagLeft)
 end
 function UpdateBoard()
     local function SearchTile(x, y)
@@ -208,10 +212,12 @@ function UpdateBoard()
                 if txtState == "none" then
                     board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "flag"
                     flagLeft -= 1
+                    UpdateFlagLeftUI(flagLeft)
                 end
                 if txtState == "flag" then
                     board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "question"
                     flagLeft += 1
+                    UpdateFlagLeftUI(flagLeft)
                 end
                 if txtState == "question" then
                     board.tileMap[cursorPosCur.y][cursorPosCur.x].state = "none"
@@ -244,9 +250,11 @@ function UpdateBoard()
             table.remove(dropletList, i)
         end
     end
+
+	UpdateUI()
 end
 function DrawBoard()
-    local startX = (screenWidth - (board.width * tileSize)) / 2
+    local startX = ((screenWidth - (board.width * tileSize)) + 68) / 2
     local startY = (screenHeight - (board.height * tileSize)) / 2
 
     if mapBorder then mapBorder:draw(startX - 8, startY - 8) end
@@ -274,14 +282,13 @@ function DrawBoard()
         end
     end
 
-    gfx.setFont(smallFont)
-    gfx.drawTextAligned(tostring(flagLeft), startX - 20, screenHeight / 2 + 5, kTextAlignment.right)
-
     if gameState == "none" then
         local cursorX = startX + (cursorPosDelta.x - 1) * tileSize + 12
         local cursorY = startY + (cursorPosDelta.y - 1) * tileSize + 10
         if imgCursor then imgCursor:draw(cursorX, cursorY) end
     end
+
+    DrawUI(startX)
 end
 
 function CreateDroplet(x, y, power)
