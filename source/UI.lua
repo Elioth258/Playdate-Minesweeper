@@ -69,19 +69,6 @@ function DrawUI(startX, stopwatch)
 
     local formatStopwatch = string.format("%02d:%02d:%03d", minutes, seconds, milliseconds)
     gfx.drawTextAligned(formatStopwatch, startX, screenHeight / 2 + 26, kTextAlignment.center)
-
-    if playdate.buttonIsPressed(playdate.kButtonUp) then
-        if imgGuyNormal then imgGuyNormal:drawCentered(startX, screenHeight / 2 - 20) end
-    end
-    if playdate.buttonIsPressed(playdate.kButtonDown) then
-        if imgGuySurprised then imgGuySurprised:drawCentered(startX, screenHeight / 2 - 20) end
-    end
-    if playdate.buttonIsPressed(playdate.kButtonLeft) then
-        if imgGuySunglasses then imgGuySunglasses:drawCentered(startX, screenHeight / 2 - 20) end
-    end
-    if playdate.buttonIsPressed(playdate.kButtonRight) then
-        if imgGuyDead then imgGuyDead:drawCentered(startX, screenHeight / 2 - 20) end
-    end
 end
 
 function UpdateFlagLeftUI(flagLeft)
