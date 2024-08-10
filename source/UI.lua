@@ -1,3 +1,4 @@
+import "board"
 import "conf"
 
 local gfx <const> = playdate.graphics
@@ -8,7 +9,8 @@ local imgBorderCorner     = gfx.image.new("images/Board/Corner")
 local imgFlagIcon = gfx.image.new("images/UI/Flag")
 local imgFlagLeft = gfx.image.new("images/UI/Flag")
 
-local UIBorder = nil
+local imgBorder = nil
+
 
 function InitUIBorder(height, tileSize)
     local uiWidth = 3
@@ -27,8 +29,8 @@ function InitUIBorder(height, tileSize)
     end
     gfx.popContext()
 
-    UIBorder = gfx.image.new(uiWidth * tileSize + 16, height * tileSize + 16)
-    gfx.pushContext(UIBorder)
+    imgBorder = gfx.image.new(uiWidth * tileSize + 16, height * tileSize + 16)
+    gfx.pushContext(imgBorder)
     if horizontalBorder then horizontalBorder:drawRotated(uiWidth * tileSize / 2 + 8, 4, 0) end
     if horizontalBorder then horizontalBorder:drawRotated(uiWidth * tileSize / 2 + 8, height * tileSize + 12, 180) end
     if verticalBorder   then verticalBorder:drawRotated(4, height * tileSize / 2 + 8, 270) end
@@ -42,12 +44,20 @@ function UpdateUI()
 
 end
 
-function DrawUI(startX)
-    startX -= 40
-    if UIBorder then UIBorder:drawCentered(startX, screenHeight / 2) end
+function DrawUI(startX, stopwatch)
+    startX -= 38
+    if imgBorder then imgBorder:drawCentered(startX, screenHeight / 2) end
 
-    if imgFlagIcon then imgFlagIcon:drawCentered(startX + 10, screenHeight / 2 + 20) end
-    if imgFlagLeft then imgFlagLeft:drawCentered(startX - 5,  screenHeight / 2 + 22) end
+    if imgFlagIcon then imgFlagIcon:drawCentered(startX + 8, screenHeight / 2 + 20) end
+    if imgFlagLeft then imgFlagLeft:drawCentered(startX - 7, screenHeight / 2 + 22) end
+
+    local minutes = math.floor(stopwatch / 60)
+    local seconds = math.floor(stopwatch % 60)
+    local milliseconds = math.floor((stopwatch % 1) * 1000)
+
+    local formatStopwatch = string.format("%02d:%02d:%03d", minutes, seconds, milliseconds)
+
+    gfx.drawTextAligned(formatStopwatch, startX, screenHeight / 2 + 40, kTextAlignment.center)
 end
 
 function UpdateFlagLeftUI(flagLeft)

@@ -30,6 +30,7 @@ local cursorSpeed    = 20
 
 local tileLeftToWin = 0
 local flagLeft      = 0
+local stopwatch     = 0
 
 local gameState = "none" -- none / win / lose
 
@@ -251,6 +252,10 @@ function UpdateBoard()
         end
     end
 
+    if mapIsInitialised and gameState == "none" then
+        if deltaTime then stopwatch += deltaTime end
+    end
+
 	UpdateUI()
 end
 function DrawBoard()
@@ -288,7 +293,7 @@ function DrawBoard()
         if imgCursor then imgCursor:draw(cursorX, cursorY) end
     end
 
-    DrawUI(startX)
+    DrawUI(startX, stopwatch)
 end
 
 function CreateDroplet(x, y, power)
