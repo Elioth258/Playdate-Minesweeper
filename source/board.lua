@@ -199,6 +199,7 @@ function UpdateBoard()
             end
 
             CreateDroplet(cursorPosCur.x, cursorPosCur.y, 1)
+            GetSurprised()
 
             if gameState == "win" then
                 Win()
@@ -293,7 +294,7 @@ function DrawBoard()
         if imgCursor then imgCursor:draw(cursorX, cursorY) end
     end
 
-    DrawUI(startX, stopwatch)
+    DrawUI(startX, stopwatch, gameState)
 end
 
 function CreateDroplet(x, y, power)
