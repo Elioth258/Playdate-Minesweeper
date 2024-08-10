@@ -27,7 +27,7 @@ playdate.resetElapsedTime()
 StartMainMenu()
 
 function StartGame()
-	StartGameBoard(15, 10, 20)
+	StartGameBoard(15, 10, 10)
 	currentState = "game"
 end
 

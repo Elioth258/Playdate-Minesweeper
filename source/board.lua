@@ -331,7 +331,18 @@ function CrossTileImage(tile)
 end
 
 function Win()
+    for y = 1, board.height, 1 do
+        for x = 1, board.width, 1 do
+            local tile = board.tileMap[y][x]
+            if not tile.reveal and not (tile.state == "flag") then
+                tile.state = "flag"
+                UpdateTileImage(tile)
+            end
+        end
+    end
 
+    flagLeft = 0
+    UpdateFlagLeftUI(flagLeft)
 end
 function Lose()
     for y = 1, board.height, 1 do

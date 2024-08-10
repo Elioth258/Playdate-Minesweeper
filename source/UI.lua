@@ -43,7 +43,7 @@ function UpdateUI()
 end
 
 function DrawUI(startX)
-    startX -= 38
+    startX -= 40
     if UIBorder then UIBorder:drawCentered(startX, screenHeight / 2) end
 
     if imgFlagIcon then imgFlagIcon:drawCentered(startX + 10, screenHeight / 2 + 20) end
