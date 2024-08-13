@@ -1,6 +1,7 @@
 import "conf"
 import "audio"
 import "UI"
+import "firework"
 
 local gfx <const> = playdate.graphics
 
@@ -87,6 +88,7 @@ function InitBorder()
     gfx.popContext()
 
     InitUIBorder(board.height, tileSize)
+    InitFirework()
 end
 function InitBoard(bannedPos)
     local function CreateTile()
@@ -258,6 +260,9 @@ function UpdateBoard()
     end
 
 	UpdateUI()
+    if gameState == "win" then
+        UpdateFirework()
+    end
 end
 function DrawBoard()
     local startX = ((screenWidth - (board.width * tileSize)) + 68) / 2
@@ -295,6 +300,7 @@ function DrawBoard()
     end
 
     DrawUI(startX, stopwatch, gameState)
+    DrawFirework()
 end
 
 function CreateDroplet(x, y, power)
