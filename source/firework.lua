@@ -27,8 +27,8 @@ function UpdateFirework()
     local function CreateFirework()
         local newFirework = {
             pos = {x = math.random(20, screenWidth - 20), y = screenHeight},
-            speedMin = 20,
-            speedMax = math.random(120, 170),
+            speedMin = 5,
+            speedMax = math.random(120, 200),
             shellLife = 0,
         }
 
@@ -47,7 +47,7 @@ function UpdateFirework()
             table.remove(fireworkList, i)
         elseif firework.shellLife > 1 then
             firework.shellLife += deltaTime
-            firework.pos.y += deltaTime * 10
+            firework.pos.y += deltaTime * 5
         else
             firework.shellLife += deltaTime / 2
             firework.pos.y -= deltaTime * Lerp(firework.speedMax, firework.speedMin, firework.shellLife)
