@@ -139,7 +139,6 @@ function GenerateEndScreen(gameState, stopwatch)
     endScreenXCurrent = screenWidth / 2
 
     local rand = math.random(4)
-    print(rand)
     if rand == 1 then endScreenYCurrent = screenHeight + height / 2 end
     if rand == 2 then endScreenXCurrent = screenWidth + width / 2 end
     if rand == 3 then endScreenYCurrent = -height / 2 end
