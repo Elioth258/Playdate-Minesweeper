@@ -131,17 +131,17 @@ function UpdateMainMenu()
 end
 function DrawMainMenu()
     local function DrawMenu()
-        if imgMainTitle then imgMainTitle:drawCentered(screenWidth / 2, 30) end
+        if imgMainTitle then imgMainTitle:drawCentered(screenHalfWidth, 30) end
 
         for i, menuBox in ipairs(imgMenuBoxes) do
-            menuBox:drawCentered(screenWidth / 2, 50 + i * 40)
+            menuBox:drawCentered(screenHalfWidth, 50 + i * 40)
         end
 
-        if imgSelection then imgSelection:drawCentered(screenWidth / 2, 50 + menuMainSmoothI * 40) end
+        if imgSelection then imgSelection:drawCentered(screenHalfWidth, 50 + menuMainSmoothI * 40) end
     end
     local function DrawRules()
         for i = 1, #ruleLocs, 1 do
-            local ballX = ((screenWidth / 2) - (#ruleLocs * 6)) + (i * 12) - 6
+            local ballX = ((screenHalfWidth) - (#ruleLocs * 6)) + (i * 12) - 6
             local ballY = screenHeight - 10
             local imgBall = i == ruleI and imgBallFull or imgBallEmpty
 
@@ -153,7 +153,7 @@ function DrawMainMenu()
         gfx.drawTextInRect(ruleLocs[ruleI][locID], 10, 30, 230, 185)
 
         local ruleToDraw = ruleImgs[ruleI]
-        if ruleToDraw then ruleToDraw:drawCentered(325, screenHeight / 2) end
+        if ruleToDraw then ruleToDraw:drawCentered(325, screenHalfHeight) end
     end
     -- local function DrawCredits()
 

@@ -1,7 +1,8 @@
 local gfx <const> = playdate.graphics
 
-screenWidth  = 400
-screenHeight = 240
+screenWidth, screenHeight = playdate.display.getSize()
+screenHalfWidth  = screenWidth  / 2
+screenHalfHeight = screenHeight / 2
 
 smallFont = gfx.font.new("fonts/Nontendo-Light")
 bigFont   = gfx.font.new("fonts/Nontendo-Light-2x")

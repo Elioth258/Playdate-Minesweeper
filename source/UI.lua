@@ -65,24 +65,24 @@ function UpdateUI()
         if deltaTime then isSurprised -= deltaTime end
     end
 
-    endScreenYCurrent = SmoothValue(endScreenYCurrent, screenHeight / 2, 10)
-    endScreenXCurrent = SmoothValue(endScreenXCurrent, screenWidth / 2, 10)
+    endScreenYCurrent = SmoothValue(endScreenYCurrent, screenHalfHeight, 10)
+    endScreenXCurrent = SmoothValue(endScreenXCurrent, screenHalfWidth, 10)
 end
 
 function DrawUI(startX, stopwatch, gameState)
     startX -= 38
-    if imgMainBorder then imgMainBorder:drawCentered(startX, screenHeight / 2) end
+    if imgMainBorder then imgMainBorder:drawCentered(startX, screenHalfHeight) end
 
-    if imgFlagIcon then imgFlagIcon:drawCentered(startX + 8, screenHeight / 2 + 13) end
-    if imgFlagLeft then imgFlagLeft:drawCentered(startX - 7, screenHeight / 2 + 15) end
+    if imgFlagIcon then imgFlagIcon:drawCentered(startX + 8, screenHalfHeight + 13) end
+    if imgFlagLeft then imgFlagLeft:drawCentered(startX - 7, screenHalfHeight + 15) end
 
-    gfx.drawTextAligned(GetFormatedStopwatch(stopwatch), startX, screenHeight / 2 + 26, kTextAlignment.center)
+    gfx.drawTextAligned(GetFormatedStopwatch(stopwatch), startX, screenHalfHeight + 26, kTextAlignment.center)
 
     local imgFace = imgGuyNormal
     if     gameState == "win"  then imgFace = imgGuySunglasses
     elseif gameState == "lose" then imgFace = imgGuyDead
     elseif isSurprised > 0     then imgFace = imgGuySurprised end
-    if imgFace then imgFace:drawCentered(startX, screenHeight / 2 - 20) end
+    if imgFace then imgFace:drawCentered(startX, screenHalfHeight - 20) end
 end
 function DrawUIOver(gameState)
     if not (gameState == "none") then
@@ -135,8 +135,8 @@ function GenerateEndScreen(gameState, stopwatch)
     gfx.popContext()
 
 
-    endScreenYCurrent = screenHeight / 2
-    endScreenXCurrent = screenWidth / 2
+    endScreenYCurrent = screenHalfHeight
+    endScreenXCurrent = screenHalfWidth
 
     local rand = math.random(4)
     if rand == 1 then endScreenYCurrent = screenHeight + height / 2 end
