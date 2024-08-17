@@ -9,6 +9,9 @@ allLoc = {
     mainRules    = {"Rules",         "Règles",        "Regeln",       "Reglas",      "Regras"},
     mainCredits  = {"Credits",       "Crédits",       "Credits",      "Créditos",    "Créditos"},
 
+    boardWon  = {"You won !", "C'est gagné !", "Du hast gewonnen!", "¡Has ganado!", "Você ganhou!"},
+    boardLose = {"You lost", "C'est perdu", "Du hast verloren", "Has perdido", "Você perdeu"},
+
     ruleMainGoal = {
     "The goal is to clear the board containing hidden mines without clicking on any of them. Uncover all non-mine squares to win.",
     "L'objectif est de vider un plateau contenant des mines cachées sans en faire exploser. Découvrez toutes les cases sans mine pour gagner.",

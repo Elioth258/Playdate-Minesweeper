@@ -157,10 +157,12 @@ function UpdateBoard()
         if tile.bombed then
             CrossTileImage(tile)
             gameState = "lose"
+            GenerateEndScreen(gameState, stopwatch)
         else
             tileLeftToWin -= 1
             if tileLeftToWin == 0 then
                 gameState = "win"
+                GenerateEndScreen(gameState, stopwatch)
             end
         end
 
@@ -301,6 +303,7 @@ function DrawBoard()
 
     DrawUI(startX, stopwatch, gameState)
     DrawFirework()
+    DrawUIOver(gameState)
 end
 
 function CreateDroplet(x, y, power)
