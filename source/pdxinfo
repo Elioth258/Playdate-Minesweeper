@@ -1,7 +1,7 @@
-name=Blank
+name=Minesweeper
 author=Elioth, Inc.
-description=Blank blank.
-bundleID=com.eliothgames.Blank
+description=Simple minesweeper game.
+bundleID=com.eliothgames.Minesweeper
 version=1.0.0
 buildNumber=100
 imagePath=SystemAssets
