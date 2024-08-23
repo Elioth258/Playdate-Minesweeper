@@ -11,7 +11,9 @@ deltaTime = 0
 totalTime = 0
 muteMusic        = false
 showDebugInfo    = true
-directlyGoInGame = true
+directlyGoInGame = false
+
+globalState = "menu" -- menu / game
 
 function Clamp(value, min, max)
 	if value < min then

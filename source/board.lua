@@ -16,6 +16,14 @@ local imgEmpty    = gfx.image.new("images/Tiles/Empty")
 local imgFlag     = gfx.image.new("images/Tiles/Flag")
 local imgBomb     = gfx.image.new("images/Tiles/Bomb")
 
+local difficulty = "easy"
+local diffMap = {
+    ["easy"]   = {width = 8,  height = 6,  bombs = 8},
+    ["medium"] = {width = 10, height = 10, bombs = 15},
+    ["hard"]   = {width = 15, height = 10, bombs = 35},
+    ["custom"] = {width = 5,  height = 5,  bombs = 5},
+}
+
 local board = {
     width  = 15,
     height = 10,
@@ -128,17 +136,20 @@ function InitBoard(bannedPos)
     end
 end
 
-function StartGameBoard(width, height, maxBomb)
-    board.width    = width
-    board.height   = height
-    board.maxBomb  = maxBomb
-    board.tileMap  = {}
+function LaunchGame()
+    print(difficulty)
+    globalState = "game"
 
-    tileLeftToWin = width * height - maxBomb
-    flagLeft = maxBomb
+    board.width   = diffMap[difficulty].width
+    board.height  = diffMap[difficulty].height
+    board.maxBomb = diffMap[difficulty].bombs
+    board.tileMap = {}
+
+    tileLeftToWin = board.width * board.height - board.maxBomb
+    flagLeft = board.maxBomb
     gameState = "none"
 
-    cursorPosCur   = {x = math.ceil(width / 2), y = math.ceil(height / 2)}
+    cursorPosCur   = {x = math.ceil(board.width / 2), y = math.ceil(board.height / 2)}
     cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
 
     mapIsInitialised = false
@@ -372,4 +383,17 @@ function Lose()
             end
         end
     end
+end
+
+function SetDifficulty(newDiff, width, height, bombs)
+    print(newDiff)
+    difficulty = newDiff
+    if newDiff == "custom" then
+        diffMap["custom"].width  = width
+        diffMap["custom"].height = height
+        diffMap["custom"].bombs  = bombs
+    end
+end
+function GetDifficulty()
+    
 end

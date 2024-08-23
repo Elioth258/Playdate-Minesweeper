@@ -14,8 +14,6 @@ import "board"
 
 local gfx <const> = playdate.graphics
 
-local currentState = "menu" -- menu / game
-
 local gameData = ReadGameData()
 locID     = gameData.locID
 muteMusic = gameData.muteMusic
@@ -25,13 +23,8 @@ playdate.resetElapsedTime()
 
 StartMainMenu()
 
-function StartGame()
-	StartGameBoard(15, 10, 10)
-	currentState = "game"
-end
-
 if directlyGoInGame then
-	StartGame()
+	LaunchGame()
 end
 
 function playdate.update()
@@ -43,9 +36,9 @@ function Update()
 	deltaTime = playdate.getElapsedTime()
 	totalTime += deltaTime
 
-	if currentState == "menu" then
+	if globalState == "menu" then
 		UpdateMainMenu()
-	elseif currentState == "game" then
+	elseif globalState == "game" then
 		UpdateBoard()
 	end
 
@@ -58,9 +51,9 @@ function Draw()
 	gfx.clear()
 	gfx.sprite.update()
 
-	if currentState == "menu" then
+	if globalState == "menu" then
 		DrawMainMenu()
-	elseif currentState == "game" then
+	elseif globalState == "game" then
 		DrawBoard()
 	end
 	DrawTransition()

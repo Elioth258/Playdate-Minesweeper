@@ -4,9 +4,10 @@ import "audio"
 
 local gfx <const> = playdate.graphics
 
-local imgBackground = gfx.image.new("images/Menu/Background")
-local imgBallEmpty  = gfx.image.new("images/Menu/RuleBallEmpty")
-local imgBallFull   = gfx.image.new("images/Menu/RuleBallFull")
+local imgBackground     = gfx.image.new("images/Menu/Background")
+local imgBallEmpty      = gfx.image.new("images/Menu/RuleBallEmpty")
+local imgBallFull       = gfx.image.new("images/Menu/RuleBallFull")
+local imgSelectionArrow = gfx.image.new("images/Menu/SelectionArrow")
 
 local imgRuleMainGoal   = gfx.image.new("images/Menu/Rules/MainGoal")
 local imgRuleBoard      = gfx.image.new("images/Menu/Rules/Board")
@@ -16,22 +17,31 @@ local imgRuleDeduce     = gfx.image.new("images/Menu/Rules/Deduce")
 local imgRuleMarking    = gfx.image.new("images/Menu/Rules/Marking")
 local imgRuleUncovering = gfx.image.new("images/Menu/Rules/Uncovering")
 
-local imgMenuBoxes = {}
-local imgSelection = nil
 local imgMainTitle      = OutlinedText(allLoc.mainTitle[locID], bigFont)
+local imgMenuBackground = OutlinedRectangle(160, 125, 1)
 local imgRuleBackground = OutlinedRectangle(244, 202, 4)
+local imgPlayBackground = OutlinedRectangle(100, 120, 2)
 
 local backgroundDeltaX = 0
 
+local menuBoxes       = {}
 local menuMainI       = 1
 local menuMainMaxI    = 3
 local menuMainSmoothI = 1
+local menuDeltaX      = screenHalfWidth
 
 local ruleLocs = {allLoc.ruleMainGoal, allLoc.ruleBoard, allLoc.ruleClick, allLoc.ruleNumber, allLoc.ruleDeduce, allLoc.ruleMarking, allLoc.ruleUncovering}
 local ruleImgs = {imgRuleMainGoal, imgRuleBoard, imgRuleClick, imgRuleNumber, imgRuleDeduce, imgRuleMarking, imgRuleUncovering}
 local ruleI    = 1
 
-local subState = "menu" -- menu / rules / credits
+local playLocs    = {allLoc.boardModeEasy, allLoc.boardModeMedium, allLoc.boardModeHard, allLoc.boardModeCustom}
+local playBoxes   = {}
+local playI       = 1
+local playMaxI    = 4
+local playSmoothI = 1
+local playDeltaX  = screenHalfWidth
+
+local subState = "menu" -- menu / play / rules
 local menu = playdate.getSystemMenu()
 
 function MuteMusic(callback)
@@ -50,25 +60,36 @@ function ChangeLanguage()
     imgMainTitle = OutlinedText(allLoc.mainTitle[locID])
 end
 function InitMenuBoxes()
-    local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules, allLoc.mainCredits}
+    local function CreateBoxes()
+        local newBox = {
+            offsetX = 0,
+            image = gfx.image.new(145, 35),
+        }
+        return newBox
+    end
+
+    local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules}
 
     gfx.setFont(bigFont)
     for i = 1, menuMainMaxI, 1 do
-        imgMenuBoxes[i] = OutlinedRectangle(145, 35, 1)
-        gfx.pushContext(imgMenuBoxes[i])
-        gfx.drawTextAligned(boxLoc[i][locID], 145 / 2, 8, kTextAlignment.center)
+        menuBoxes[i] = CreateBoxes()
+        gfx.pushContext(menuBoxes[i].image)
+        gfx.drawTextAligned(boxLoc[i][locID], 0, 8, kTextAlignment.left)
         gfx.popContext()
     end
+    menuBoxes[menuMainI].offsetX = 10
 
-    imgSelection = gfx.image.new(151, 41)
-    gfx.pushContext(imgSelection)
-    gfx.setLineWidth(4)
-    gfx.drawRect(0, 0, 151, 41)
-    gfx.popContext()
+    gfx.setFont(smallFont)
+    for i = 1, playMaxI, 1 do
+        playBoxes[i] = CreateBoxes()
+        gfx.pushContext(playBoxes[i].image)
+        gfx.drawTextAligned(playLocs[i][locID], 0, 4, kTextAlignment.left)
+        gfx.popContext()
+    end
 end
 function SetMenuType(newMenu)
-    if newMenu == "play" then
-        StartGame()
+    if newMenu == "launch" then
+        LaunchGame()
         subState = "menu"
     else
         subState = newMenu
@@ -87,18 +108,61 @@ function UpdateMainMenu()
     local function UpdateMenu()
         if playdate.buttonJustPressed(playdate.kButtonUp) and menuMainI > 1 then
             PlayAudioTable(soundSwipes)
-            menuMainI = menuMainI - 1
+            menuMainI -= 1
         elseif playdate.buttonJustPressed(playdate.kButtonDown) and menuMainI < menuMainMaxI then
             PlayAudioTable(soundSwipes)
-            menuMainI = menuMainI + 1
+            menuMainI += 1
         elseif playdate.buttonJustPressed(playdate.kButtonA) then
             PlayAudio(soundMenuSelect)
-            if menuMainI == 1 then LaunchTransition("play")  end
-            if menuMainI == 2 then ChangeLanguage()            end
-            if menuMainI == 3 then LaunchTransition("rules")   end
-            -- if menuMainI == 4 then LaunchTransition("credits") end
+            if menuMainI == 1 then subState = "play"         end
+            if menuMainI == 2 then ChangeLanguage()          end
+            if menuMainI == 3 then LaunchTransition("rules") end
         end
         menuMainSmoothI = SmoothValue(menuMainSmoothI, menuMainI, 10)
+
+        for i, menuBox in ipairs(menuBoxes) do
+            if i == menuMainI then
+                menuBox.offsetX = SmoothValue(menuBox.offsetX, 10, 10)
+            else
+                menuBox.offsetX = SmoothValue(menuBox.offsetX, 0, 10)
+            end
+        end
+
+        menuDeltaX = SmoothValue(menuDeltaX, screenHalfWidth, 10)
+        playDeltaX = SmoothValue(playDeltaX, menuDeltaX, 10)
+    end
+    local function UpdatePlay()
+        if playdate.buttonJustPressed(playdate.kButtonUp) and playI > 1 then
+            PlayAudioTable(soundSwipes)
+            playI -= 1
+        elseif playdate.buttonJustPressed(playdate.kButtonDown) and playI < playMaxI then
+            PlayAudioTable(soundSwipes)
+            playI += 1
+        elseif playdate.buttonJustPressed(playdate.kButtonA) then
+            PlayAudio(soundMenuSelect)
+            if playI == 1 then LaunchTransition("launch") SetDifficulty("easy") end
+            if playI == 2 then LaunchTransition("launch") SetDifficulty("medium") end
+            if playI == 3 then LaunchTransition("launch") SetDifficulty("hard") end
+            if playI == 4 then subState = "custom" end
+        elseif playdate.buttonJustPressed(playdate.kButtonB) then
+            PlayAudio(soundMenuSelect)
+            subState = "menu"
+        end
+        playSmoothI = SmoothValue(playSmoothI, playI, 10)
+
+        for i, playBox in ipairs(playBoxes) do
+            if i == playI then
+                playBox.offsetX = SmoothValue(playBox.offsetX, 10, 10)
+            else
+                playBox.offsetX = SmoothValue(playBox.offsetX, 0, 10)
+            end
+        end
+        for i, menuBox in ipairs(menuBoxes) do
+            menuBox.offsetX = SmoothValue(menuBox.offsetX, 0, 10)
+        end
+
+        menuDeltaX = SmoothValue(menuDeltaX, screenHalfWidth - 80, 10)
+        playDeltaX = SmoothValue(playDeltaX, menuDeltaX + 135, 10)
     end
     local function UpdateRules()
         if playdate.buttonJustPressed(playdate.kButtonRight) and ruleI < #ruleLocs then
@@ -115,17 +179,14 @@ function UpdateMainMenu()
             LaunchTransition("menu")
         end
     end
-    -- local function UpdateCredits()
-  
-    --     if playdate.buttonJustPressed(playdate.kButtonB) then
-    --         PlayAudio(soundMenuSelect)
-    --         LaunchTransition("menu")
-    --     end
-    -- end
 
-    if     subState == "menu" then    UpdateMenu()
-    elseif subState == "rules" then   UpdateRules() end
-    -- elseif subState == "credits" then UpdateCredits() end
+    if subState == "menu" then
+        UpdateMenu()
+    elseif subState == "play" then
+        UpdatePlay()
+    elseif subState == "rules" then
+        UpdateRules()
+    end
 
     if deltaTime then backgroundDeltaX = (backgroundDeltaX + deltaTime * 30) % screenWidth  end
 end
@@ -133,11 +194,24 @@ function DrawMainMenu()
     local function DrawMenu()
         if imgMainTitle then imgMainTitle:drawCentered(screenHalfWidth, 30) end
 
-        for i, menuBox in ipairs(imgMenuBoxes) do
-            menuBox:drawCentered(screenHalfWidth, 50 + i * 40)
+        if imgMenuBackground then imgMenuBackground:drawCentered(menuDeltaX, screenHalfHeight + 10) end
+        for i, menuBox in ipairs(menuBoxes) do
+            menuBox.image:drawCentered(menuDeltaX + menuBox.offsetX, 50 + i * 40)
         end
 
-        if imgSelection then imgSelection:drawCentered(screenHalfWidth, 50 + menuMainSmoothI * 40) end
+        if subState == "menu" then
+            if imgSelectionArrow then imgSelectionArrow:drawCentered(menuDeltaX - 70, 50 + menuMainSmoothI * 40) end
+        end
+    end
+    local function DrawPlay()
+        if imgPlayBackground then imgPlayBackground:drawCentered(playDeltaX, screenHalfHeight + 10) end
+        for i, playBox in ipairs(playBoxes) do
+            playBox.image:drawCentered(playDeltaX + 30 + playBox.offsetX, 75 + i * 25)
+        end
+
+        if subState == "play" then
+            if imgSelectionArrow then imgSelectionArrow:drawCentered(playDeltaX - 42, 67 + playSmoothI * 25) end
+        end
     end
     local function DrawRules()
         for i = 1, #ruleLocs, 1 do
@@ -155,14 +229,16 @@ function DrawMainMenu()
         local ruleToDraw = ruleImgs[ruleI]
         if ruleToDraw then ruleToDraw:drawCentered(325, screenHalfHeight) end
     end
-    -- local function DrawCredits()
-
-    -- end
 
     if imgBackground then imgBackground:draw(backgroundDeltaX, 0) end
     if imgBackground then imgBackground:draw(backgroundDeltaX - screenWidth, 0) end
 
-    if     subState == "menu" then    DrawMenu()
-    elseif subState == "rules" then   DrawRules() end
-    -- elseif subState == "credits" then DrawCredits() end
+    if subState == "menu" or subState == "play" then
+        if not (math.abs(playDeltaX - menuDeltaX) < 5) then
+            DrawPlay()
+        end
+        DrawMenu()
+    elseif subState == "rules" then
+        DrawRules()
+    end
 end

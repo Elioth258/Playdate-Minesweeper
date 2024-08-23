@@ -9,8 +9,15 @@ allLoc = {
     mainRules    = {"Rules",         "Règles",        "Regeln",       "Reglas",      "Regras"},
     mainCredits  = {"Credits",       "Crédits",       "Credits",      "Créditos",    "Créditos"},
 
-    boardWon  = {"You won !", "C'est gagné !", "Du hast gewonnen!", "¡Has ganado!", "Você ganhou!"},
-    boardLose = {"You lost", "C'est perdu", "Du hast verloren", "Has perdido", "Você perdeu"},
+    boardWon   = {"You won !", "C'est gagné !", "Du hast gewonnen!", "¡Has ganado!", "Você ganhou!"},
+    boardLose  = {"You lost",  "C'est perdu",   "Du hast verloren",  "Has perdido",  "Você perdeu"},
+    boardRetry = {"Retry", "Recommencer", "Erneut versuchen", "Reintentar", "Tentar novamente"},
+    boardQuit  = {"Quit",  "Quitter",     "Beenden",          "Salir",      "Sair"},
+
+    boardModeEasy   = {"Easy mode",      "Mode facile",    "Einfacher Modus",           "Modo fácil",            "Modo fácil"},
+    boardModeMedium = {"Medium mode",    "Mode moyen",     "Mittlerer Modus",           "Modo medio",            "Modo médio"},
+    boardModeHard   = {"Hard mode",      "Mode difficile", "Schwieriger Modus",         "Modo difícil",          "Modo difícil"},
+    boardModeCustom = {"Custom mode",    "Mode custom",    "Kundenspezifisch Modus",    "Modo personalizado",    "Modo personalizado"},
 
     ruleMainGoal = {
     "The goal is to clear the board containing hidden mines without clicking on any of them. Uncover all non-mine squares to win.",
