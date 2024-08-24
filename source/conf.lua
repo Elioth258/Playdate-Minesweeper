@@ -30,9 +30,8 @@ function Lerp(start, finish, t)
 end
 
 function SmoothValue(smoothedValue, desiredValue, speed)
-	local returnValue = smoothedValue + (desiredValue - smoothedValue) * speed * deltaTime
-	if math.abs(desiredValue - smoothedValue) < 0.005 then returnValue = desiredValue end
-	return returnValue
+	if math.abs(desiredValue - smoothedValue) < 0.005 then return desiredValue end
+	return smoothedValue + (desiredValue - smoothedValue) * speed * deltaTime
 end
 
 function Distance(x1, y1, x2, y2)
