@@ -137,7 +137,6 @@ function InitBoard(bannedPos)
 end
 
 function LaunchGame()
-    print(difficulty)
     globalState = "game"
 
     board.width   = diffMap[difficulty].width
@@ -386,7 +385,6 @@ function Lose()
 end
 
 function SetDifficulty(newDiff, width, height, bombs)
-    print(newDiff)
     difficulty = newDiff
     if newDiff == "custom" then
         diffMap["custom"].width  = width
