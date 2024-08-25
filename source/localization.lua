@@ -17,12 +17,15 @@ allLoc = {
     boardModeEasy   = {"Easy mode",      "Mode facile",    "Einfacher Modus",           "Modo fácil",            "Modo fácil"},
     boardModeMedium = {"Medium mode",    "Mode moyen",     "Mittlerer Modus",           "Modo medio",            "Modo médio"},
     boardModeHard   = {"Hard mode",      "Mode difficile", "Schwieriger Modus",         "Modo difícil",          "Modo difícil"},
-    boardModeCustom = {"Custom mode",    "Mode custom",    "Kundenspezifisch",          "Modo personalizado",    "Modo personalizado"},
+    boardModeCustom = {"Custom mode",    "Mode custom",    "Kundenspezifisch Modus",    "Modo personalizado",    "Modo personalizado"},
 
     boardCustomWidth  = {"Width",  "Largeur", "Breite",  "Ancho",  "Largura"},
     boardCustomHeight = {"Height", "Hauteur", "Höhe",    "Altura", "Altura"},
     boardCustomBombs  = {"Bombs",  "Bombes",  "Bomben",  "Bombas", "Bombas"},
+    boardCustomBomb   = {"Bomb",   "Bombe",   "Bombe",   "Bomba",  "Bomba"},
     boardCustomLaunch = {"Launch", "Lancer",  "Starten", "Lanzar", "Lançar"},
+
+    boardTime = {"Time", "Temps", "Zeit", "Tiempo", "Tempo"},
 
     ruleMainGoal = {
     "The goal is to clear the board containing hidden mines without clicking on any of them. Uncover all non-mine squares to win.",

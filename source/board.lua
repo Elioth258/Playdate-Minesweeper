@@ -18,7 +18,7 @@ local imgBomb     = gfx.image.new("images/Tiles/Bomb")
 
 local difficulty = "easy"
 local diffMap = {
-    ["easy"]   = {width = 8,  height = 6,  bombs = 8},
+    ["easy"]   = {width = 8,  height = 7,  bombs = 7},
     ["medium"] = {width = 10, height = 10, bombs = 15},
     ["hard"]   = {width = 15, height = 10, bombs = 35},
     ["custom"] = {width = 5,  height = 5,  bombs = 5},
@@ -393,5 +393,13 @@ function SetDifficulty(newDiff, width, height, bombs)
     end
 end
 function GetDifficulty()
-    
+    local strMode = ""
+    if difficulty == "easy"   then strMode = allLoc.boardModeEasy[locID]   end
+    if difficulty == "medium" then strMode = allLoc.boardModeMedium[locID] end
+    if difficulty == "hard"   then strMode = allLoc.boardModeHard[locID]   end
+    if difficulty == "custom" then strMode = allLoc.boardModeCustom[locID] end
+
+    local boardSpec = string.format("%dx%d - %d", board.width, board.height, board.maxBomb)
+    local bombWord  = board.maxBomb == 1 and allLoc.boardCustomBomb[locID] or allLoc.boardCustomBombs[locID]
+    return strMode .. " : " .. boardSpec .. " " .. bombWord
 end
