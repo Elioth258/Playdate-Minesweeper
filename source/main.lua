@@ -15,8 +15,13 @@ import "board"
 local gfx <const> = playdate.graphics
 
 local gameData = ReadGameData()
-locID     = gameData.locID
-muteMusic = gameData.muteMusic
+
+if gameData then
+	locID     = gameData.locID
+	muteMusic = gameData.muteMusic
+	SetDifficultyCustom(gameData.customDifficulty)
+	SetMainMenuCustomVar(gameData.customDifficulty)
+end
 
 playdate.setCrankSoundsDisabled(not playdate.isSimulator)
 playdate.resetElapsedTime()
@@ -64,8 +69,8 @@ function Draw()
 end
 
 function playdate.gameWillTerminate()
-	SaveGameData()
+	SaveGameData(GetDifficultyCustom())
 end
 function playdate.deviceWillSleep()
-	SaveGameData()
+	SaveGameData(GetDifficultyCustom())
 end

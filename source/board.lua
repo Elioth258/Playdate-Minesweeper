@@ -392,7 +392,14 @@ function SetDifficulty(newDiff, width, height, bombs)
         diffMap["custom"].bombs  = bombs
     end
 end
-function GetDifficulty()
+
+function SetDifficultyCustom(diffCustom)
+    diffMap["custom"] = diffCustom
+end
+function GetDifficultyCustom()
+    return diffMap["custom"]
+end
+function GetDifficultyFormat()
     local strMode = ""
     if difficulty == "easy"   then strMode = allLoc.boardModeEasy[locID]   end
     if difficulty == "medium" then strMode = allLoc.boardModeMedium[locID] end

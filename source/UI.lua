@@ -153,12 +153,12 @@ function GenerateEndScreen(gameState, stopwatch, difficulty)
 
         gfx.setFont(smallFont)
         gfx.drawTextAligned(allLoc.boardTime[locID] .. " : " .. GetFormatedStopwatch(stopwatch), width / 2, height - 30, kTextAlignment.center)
-        gfx.drawTextAligned(GetDifficulty(), width / 2, height - 15, kTextAlignment.center)
+        gfx.drawTextAligned(GetDifficultyFormat(), width / 2, height - 15, kTextAlignment.center)
     elseif gameState == "lose" then
         gfx.drawTextAligned(allLoc.boardLose[locID], width / 2, 10, kTextAlignment.center)
 
         gfx.setFont(smallFont)
-        gfx.drawTextAligned(GetDifficulty(), width / 2, height - 15, kTextAlignment.center)
+        gfx.drawTextAligned(GetDifficultyFormat(), width / 2, height - 15, kTextAlignment.center)
     end
 
     gfx.popContext()

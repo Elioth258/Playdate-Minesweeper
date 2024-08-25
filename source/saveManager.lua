@@ -1,22 +1,16 @@
 import "localization"
 
-function SaveGameData()
+function SaveGameData(customDifficulty)
     local gameData = {
         locID = locID,
         muteMusic = muteMusic,
+        customDifficulty = customDifficulty
     }
 
     playdate.datastore.write(gameData, "save")
 end
 function ReadGameData()
 	local gameData = playdate.datastore.read("save")
-
-    if not gameData then
-        gameData = {
-            locID = 1,
-            muteMusic = false,
-        }
-    end
 
     return gameData
 end

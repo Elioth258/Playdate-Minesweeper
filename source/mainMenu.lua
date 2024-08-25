@@ -339,3 +339,9 @@ function CheckCustomValidity()
     local maxBomb = (customVar[1] * customVar[2]) - 9
     customVar[3] = Clamp(customVar[3], 1, maxBomb)
 end
+
+function SetMainMenuCustomVar(diffCustom)
+    customVar[1] = diffCustom.width
+    customVar[2] = diffCustom.height
+    customVar[3] = diffCustom.bombs
+end
