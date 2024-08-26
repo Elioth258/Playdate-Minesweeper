@@ -58,6 +58,7 @@ local ruleI    = 1
 
 local subState = "menu" -- menu / play / custom / rules
 local menu = playdate.getSystemMenu()
+local menuQuitBtn = nil
 
 function MuteMusic(callback)
     if callback then
@@ -114,7 +115,7 @@ end
 function SetMenuType(newMenu)
     if newMenu == "launch" then
         LaunchGame()
-        subState = "menu"
+        menuQuitBtn = menu:addMenuItem("Quit to menu", QuitToMenu)
     else
         subState = newMenu
     end
@@ -128,6 +129,11 @@ function StartMainMenu()
         PlayAudio(soundMainTheme, 0)
     end
 end
+function QuitToMenu()
+    LaunchTransition("menu")
+    menu:removeMenuItem(menuQuitBtn)
+end
+
 function UpdateMainMenu()
     local function UpdateMenu()
         if playdate.buttonJustPressed(playdate.kButtonUp) and menuMainI > 1 then

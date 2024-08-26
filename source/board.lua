@@ -145,8 +145,9 @@ function LaunchGame()
     board.tileMap = {}
 
     tileLeftToWin = board.width * board.height - board.maxBomb
-    flagLeft = board.maxBomb
-    gameState = "none"
+    flagLeft      = board.maxBomb
+    gameState     = "none"
+    stopwatch     = 0
 
     cursorPosCur   = {x = math.ceil(board.width / 2), y = math.ceil(board.height / 2)}
     cursorPosDelta = {x = cursorPosCur.x, y = cursorPosCur.y}
@@ -184,6 +185,8 @@ function UpdateBoard()
             end
         end
     end
+
+    UpdateUI(gameState)
 
     if gameState == "none" then
         if playdate.buttonJustPressed(playdate.kButtonA)  then
@@ -271,7 +274,6 @@ function UpdateBoard()
         if deltaTime then stopwatch += deltaTime end
     end
 
-	UpdateUI()
     if gameState == "win" then
         UpdateFirework()
     end

@@ -15,7 +15,13 @@ function UpdateTransition()
         if deltaTime then timer += deltaTime * 2.5 end
 
         if timer >= 0.5 and not (nextMenuType == "none") then
-            SetMenuType(nextMenuType)
+            if nextMenuType == "menu" then
+                globalState = "menu"
+            elseif nextMenuType == "restart" then
+                LaunchGame()
+            else
+                SetMenuType(nextMenuType)
+            end
             nextMenuType = "none"
         elseif timer >= 1 then
             isTransitionning = false

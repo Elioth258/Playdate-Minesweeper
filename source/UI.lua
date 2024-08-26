@@ -1,4 +1,5 @@
 import "board"
+import "transition"
 import "localization"
 import "conf"
 
@@ -19,10 +20,15 @@ local imgMainBorder  = nil
 local imgEndScreen   = nil
 local imgButtonRetry = nil
 local imgButtonQuit  = nil
+local imgSelection   = nil
 
 local isSurprised = 0
 local endScreenYCurrent = 0
 local endScreenXCurrent = 0
+
+local canDrawEndScreen = false
+local selectionI       = 1
+local selectionSmoothI = 1
 
 function InitUIBorder(height, tileSize)
     local uiWidth = 3
@@ -61,7 +67,7 @@ function InitUIBorder(height, tileSize)
 
     gfx.popContext()
 
-    local btnWidth  = 85
+    local btnWidth  = 90
     local btnHeight = 25
 
     gfx.setFont(smallFont)
@@ -80,15 +86,44 @@ function InitUIBorder(height, tileSize)
     gfx.drawTextAligned(allLoc.boardQuit[locID], btnWidth / 2, 7.5, kTextAlignment.center)
 
     gfx.popContext()
+
+    imgSelection = gfx.image.new(btnWidth, btnHeight)
+    gfx.pushContext(imgSelection)
+
+    gfx.setLineWidth(3)
+    gfx.drawRect(0, 0, btnWidth, btnHeight)
+
+    gfx.popContext()
 end
 
-function UpdateUI()
+function UpdateUI(gameState)
     if isSurprised > 0 then
         if deltaTime then isSurprised -= deltaTime end
     end
 
-    endScreenYCurrent = SmoothValue(endScreenYCurrent, screenHalfHeight, 10)
-    endScreenXCurrent = SmoothValue(endScreenXCurrent, screenHalfWidth, 10)
+    if not (gameState == "none") and (playdate.buttonJustPressed(playdate.kButtonA) or playdate.buttonJustPressed(playdate.kButtonB)) then
+        canDrawEndScreen = true
+    end
+    if canDrawEndScreen then
+        endScreenYCurrent = SmoothValue(endScreenYCurrent, screenHalfHeight, 10)
+        endScreenXCurrent = SmoothValue(endScreenXCurrent, screenHalfWidth, 10)
+
+        if playdate.buttonJustPressed(playdate.kButtonLeft) then
+            selectionI = 1
+        elseif playdate.buttonJustPressed(playdate.kButtonRight) then
+            selectionI = 2
+        elseif playdate.buttonJustPressed(playdate.kButtonA) and (math.abs(endScreenYCurrent - screenHalfHeight) < 10 and math.abs(endScreenXCurrent - screenHalfWidth) < 10) then
+            if selectionI == 1 then
+                canDrawEndScreen = false
+                LaunchTransition("restart")
+            elseif selectionI == 2 then
+                canDrawEndScreen = false
+                LaunchTransition("menu")
+            end
+        end
+
+        selectionSmoothI = SmoothValue(selectionSmoothI, selectionI, 8)
+    end
 end
 
 function DrawUI(startX, stopwatch, gameState)
@@ -110,8 +145,11 @@ function DrawUIOver(gameState)
     if not (gameState == "none") then
         if imgEndScreen then imgEndScreen:drawCentered(endScreenXCurrent, endScreenYCurrent) end
 
-        if imgButtonRetry then imgButtonRetry:drawCentered(endScreenXCurrent - 50, endScreenYCurrent + 15) end
-        if imgButtonQuit  then imgButtonQuit:drawCentered(endScreenXCurrent + 50, endScreenYCurrent + 15) end
+        if imgButtonRetry then imgButtonRetry:drawCentered(endScreenXCurrent - 50, endScreenYCurrent) end
+        if imgButtonQuit  then imgButtonQuit:drawCentered(endScreenXCurrent + 50, endScreenYCurrent) end
+
+        local selectionX = (endScreenXCurrent - 150) + (selectionSmoothI * 100)
+        if imgSelection then imgSelection:drawCentered(selectionX, endScreenYCurrent) end
     end
 end
 
@@ -139,27 +177,22 @@ function GetSurprised()
 end
 
 function GenerateEndScreen(gameState, stopwatch, difficulty)
-    local width  = 250
-    local height = 125
+    local width  = 230
+    local height = 105
+    local endLoc = gameState == "win" and allLoc.boardWon[locID] or allLoc.boardLose[locID]
 
     imgEndScreen = gfx.image.new(width, height)
     gfx.pushContext(imgEndScreen)
 
     OutlinedRectangle(width, height, 2):draw(0, 0)
+    gfx.drawLine(0, height - 35, width, height - 35)
 
     gfx.setFont(bigFont)
-    if gameState == "win" then
-        gfx.drawTextAligned(allLoc.boardWon[locID], width / 2, 10, kTextAlignment.center)
+    gfx.drawTextAligned(endLoc, width / 2, 10, kTextAlignment.center)
 
-        gfx.setFont(smallFont)
-        gfx.drawTextAligned(allLoc.boardTime[locID] .. " : " .. GetFormatedStopwatch(stopwatch), width / 2, height - 30, kTextAlignment.center)
-        gfx.drawTextAligned(GetDifficultyFormat(), width / 2, height - 15, kTextAlignment.center)
-    elseif gameState == "lose" then
-        gfx.drawTextAligned(allLoc.boardLose[locID], width / 2, 10, kTextAlignment.center)
-
-        gfx.setFont(smallFont)
-        gfx.drawTextAligned(GetDifficultyFormat(), width / 2, height - 15, kTextAlignment.center)
-    end
+    gfx.setFont(smallFont)
+    gfx.drawTextAligned(allLoc.boardTime[locID] .. " : " .. GetFormatedStopwatch(stopwatch), width / 2, height - 30, kTextAlignment.center)
+    gfx.drawTextAligned(GetDifficultyFormat(), width / 2, height - 15, kTextAlignment.center)
 
     gfx.popContext()
 
@@ -171,4 +204,8 @@ function GenerateEndScreen(gameState, stopwatch, difficulty)
     if rand == 2 then endScreenXCurrent = screenWidth + width / 2 end
     if rand == 3 then endScreenYCurrent = -height / 2 end
     if rand == 4 then endScreenXCurrent = -width / 2 end
+
+    canDrawEndScreen = false
+    selectionI       = 1
+    selectionSmoothI = 1
 end
