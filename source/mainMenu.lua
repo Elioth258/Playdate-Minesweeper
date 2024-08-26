@@ -146,7 +146,7 @@ function UpdateMainMenu()
             PlayAudio(soundMenuSelect)
             if menuMainI == 1 then subState = "play"         end
             if menuMainI == 2 then ChangeLanguage()          end
-            if menuMainI == 3 then LaunchTransition("rules") end
+            if menuMainI == 3 then LaunchTransition("rules") ruleI = 1 end
         end
         menuMainSmoothI = SmoothValue(menuMainSmoothI, menuMainI, 10)
 
@@ -250,7 +250,7 @@ function UpdateMainMenu()
 
         if playdate.buttonJustPressed(playdate.kButtonB) then
             PlayAudio(soundMenuSelect)
-            LaunchTransition("menu")
+            LaunchTransition("quitRule")
         end
     end
 

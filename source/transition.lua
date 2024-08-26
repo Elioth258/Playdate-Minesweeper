@@ -17,6 +17,8 @@ function UpdateTransition()
         if timer >= 0.5 and not (nextMenuType == "none") then
             if nextMenuType == "menu" then
                 globalState = "menu"
+            elseif nextMenuType == "quitRule" then
+                SetMenuType("menu")
             elseif nextMenuType == "restart" then
                 LaunchGame()
             else
