@@ -23,6 +23,10 @@ function InitFirework()
     gfx.popContext()
 end
 
+function RestartFirework()
+    fireworkList = {}
+end
+
 function UpdateFirework()
     local function CreateFirework()
         local newFirework = {

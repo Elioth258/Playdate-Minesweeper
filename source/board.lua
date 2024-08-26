@@ -156,6 +156,7 @@ function LaunchGame()
     mapBorder = nil
 	InitBorder()
     UpdateFlagLeftUI(flagLeft)
+    RestartFirework()
 end
 function UpdateBoard()
     local function SearchTile(x, y)
