@@ -109,6 +109,7 @@ function UpdateUI(gameState)
         endScreenYCurrent = SmoothValue(endScreenYCurrent, screenHalfHeight, 10)
         endScreenXCurrent = SmoothValue(endScreenXCurrent, screenHalfWidth, 10)
 
+        local prevSelection = selectionI
         if playdate.buttonJustPressed(playdate.kButtonLeft) then
             selectionI = 1
         elseif playdate.buttonJustPressed(playdate.kButtonRight) then
@@ -116,12 +117,15 @@ function UpdateUI(gameState)
         elseif playdate.buttonJustPressed(playdate.kButtonA) and (math.abs(endScreenYCurrent - screenHalfHeight) < 10 and math.abs(endScreenXCurrent - screenHalfWidth) < 10) then
             if selectionI == 1 then
                 canDrawEndScreen = false
+                PlayAudio(soundMenuSelect)
                 LaunchTransition("restart")
             elseif selectionI == 2 then
                 canDrawEndScreen = false
+                PlayAudio(soundMenuSelect)
                 QuitToMenu()
             end
         end
+        if not (prevSelection == selectionI) then PlayAudioTable(soundSwipes) end
 
         selectionSmoothI = SmoothValue(selectionSmoothI, selectionI, 8)
     end

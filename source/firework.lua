@@ -1,4 +1,5 @@
 import "animation"
+import "audio"
 import "conf"
 
 local gfx <const> = playdate.graphics
@@ -37,6 +38,7 @@ function UpdateFirework()
         }
 
         table.insert(fireworkList, newFirework)
+        PlayAudio(soundFireworkTrail)
     end
 
     if deltaTime then timerNextFirework -= deltaTime end
@@ -55,6 +57,7 @@ function UpdateFirework()
         else
             firework.shellLife += deltaTime / 2
             firework.pos.y -= deltaTime * Lerp(firework.speedMax, firework.speedMin, firework.shellLife)
+            if firework.shellLife > 1 then PlayAudio(soundFireworkBlast) end
         end
     end
 end

@@ -1,6 +1,6 @@
 import "transition"
-import "conf"
 import "audio"
+import "conf"
 
 local gfx <const> = playdate.graphics
 

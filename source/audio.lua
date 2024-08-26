@@ -10,6 +10,9 @@ soundMainTheme  = ssp.new("audios/MainTheme")
 soundMenuSelect = ssp.new("audios/MenuSelect")
 soundMenuGoBack = ssp.new("audios/MenuGoBack")
 
+soundFireworkBlast = ssp.new("audios/FireworkBlast")
+soundFireworkTrail = ssp.new("audios/FireworkTrail")
+
 function PlayAudioTable(soundTable, loop)
     if loop == nil then loop = 1 end
 
