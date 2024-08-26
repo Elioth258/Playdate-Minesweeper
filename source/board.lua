@@ -44,6 +44,7 @@ local stopwatch     = 0
 local gameState = "none" -- none / win / lose
 
 local mapIsInitialised = false
+local imgContinue = nil
 local mapBorder = nil
 local imgCross  = nil
 
@@ -94,6 +95,8 @@ function InitBorder()
     if imgBorderCorner then imgBorderCorner:drawRotated(4, board.height * tileSize + 12, 270) end
     if imgBorderCorner then imgBorderCorner:drawRotated(board.width * tileSize + 12, board.height * tileSize + 12, 180) end
     gfx.popContext()
+
+    imgContinue = OutlinedText(allLoc.boardContinue[locID], smallFont)
 
     InitUIBorder(board.height, tileSize)
     InitFirework()
@@ -316,7 +319,7 @@ function DrawBoard()
 
     DrawUI(startX, stopwatch, gameState)
     DrawFirework()
-    DrawUIOver(gameState)
+    DrawUIOver(gameState, imgContinue)
 end
 
 function CreateDroplet(x, y, power)

@@ -141,7 +141,7 @@ function DrawUI(startX, stopwatch, gameState)
     elseif isSurprised > 0     then imgFace = imgGuySurprised end
     if imgFace then imgFace:drawCentered(startX, screenHalfHeight - 20) end
 end
-function DrawUIOver(gameState)
+function DrawUIOver(gameState, imgContinue)
     if not (gameState == "none") then
         if imgEndScreen then imgEndScreen:drawCentered(endScreenXCurrent, endScreenYCurrent) end
 
@@ -150,6 +150,10 @@ function DrawUIOver(gameState)
 
         local selectionX = (endScreenXCurrent - 150) + (selectionSmoothI * 100)
         if imgSelection then imgSelection:drawCentered(selectionX, endScreenYCurrent) end
+
+        if not canDrawEndScreen then
+            imgContinue:drawCentered(screenHalfWidth, screenHeight - 10)
+        end
     end
 end
 

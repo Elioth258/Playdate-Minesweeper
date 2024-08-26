@@ -26,6 +26,7 @@ allLoc = {
     boardCustomLaunch = {"Launch", "Lancer",  "Starten", "Lanzar", "Lançar"},
 
     boardTime = {"Time", "Temps", "Zeit", "Tiempo", "Tempo"},
+    boardContinue = {"Press @ to continue", "Appuyez sur @ pour continuer", "Drücken Sie @, um fortzufahren", "Presiona @ para continuar", "Pressione @ para continuar"},
 
     ruleMainGoal = {
     "The goal is to clear the board containing hidden mines without clicking on any of them. Uncover all non-mine squares to win.",
