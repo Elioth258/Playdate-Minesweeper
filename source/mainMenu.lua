@@ -197,6 +197,7 @@ function UpdateMainMenu()
         customDeltaX = SmoothValue(customDeltaX, playDeltaX, slideSpeed)
     end
     local function UpdateCustom()
+        local previousVar1, previousVar2, previousVar3 = customVar[1], customVar[2], customVar[3]
         if playdate.buttonJustPressed(playdate.kButtonUp) and customI > 1 then
             PlayAudioTable(soundSwipes)
             customI -= 1
@@ -221,6 +222,10 @@ function UpdateMainMenu()
             if customI == 3 then customVar[3] += 1 end
             CheckCustomValidity()
         end
+        if not (previousVar1 == customVar[1]) or not (previousVar2 == customVar[2]) or not (previousVar3 == customVar[3]) then
+            PlayAudioTable(soundSwipes)
+        end
+
         customSmoothI = SmoothValue(customSmoothI, customI, 10)
 
         for i, customBox in ipairs(customBoxes) do
