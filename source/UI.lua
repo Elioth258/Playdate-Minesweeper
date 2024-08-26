@@ -1,4 +1,5 @@
 import "board"
+import "mainMenu"
 import "transition"
 import "localization"
 import "conf"
@@ -118,7 +119,7 @@ function UpdateUI(gameState)
                 LaunchTransition("restart")
             elseif selectionI == 2 then
                 canDrawEndScreen = false
-                LaunchTransition("menu")
+                QuitToMenu()
             end
         end
 
