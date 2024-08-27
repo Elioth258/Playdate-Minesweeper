@@ -10,7 +10,7 @@ bigFont   = gfx.font.new("fonts/Nontendo-Light-2x")
 deltaTime = 0
 totalTime = 0
 muteMusic        = false
-showDebugInfo    = true
+showDebugInfo    = false
 directlyGoInGame = false
 
 globalState = "menu" -- menu / game
