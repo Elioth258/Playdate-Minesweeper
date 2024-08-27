@@ -173,6 +173,7 @@ function UpdateBoard()
             CrossTileImage(tile)
             gameState = "lose"
             GenerateEndScreen(gameState, stopwatch)
+            PlayAudio(soundExplosion)
         else
             tileLeftToWin -= 1
             if tileLeftToWin == 0 then
@@ -194,6 +195,7 @@ function UpdateBoard()
 
     if gameState == "none" then
         if playdate.buttonJustPressed(playdate.kButtonA)  then
+            PlayAudio(soundMenuSelect)
             if not mapIsInitialised then
                 mapIsInitialised = true
                 InitBoard(cursorPosCur)
@@ -229,6 +231,7 @@ function UpdateBoard()
             end
         end
         if playdate.buttonJustPressed(playdate.kButtonB) and mapIsInitialised then
+            PlayAudioTable(soundSwipes)
             if board.tileMap[cursorPosCur.y][cursorPosCur.x].reveal == false then
                 local txtState = board.tileMap[cursorPosCur.y][cursorPosCur.x].state
 
@@ -250,6 +253,7 @@ function UpdateBoard()
             end
         end
 
+        local prevCursorX, prevCursorY = cursorPosCur.x, cursorPosCur.y
         if playdate.buttonJustPressed(playdate.kButtonUp) and cursorPosCur.y > 1 then
             cursorPosCur.y -= 1
         end
@@ -262,6 +266,7 @@ function UpdateBoard()
         if playdate.buttonJustPressed(playdate.kButtonRight) and cursorPosCur.x < board.width then
             cursorPosCur.x += 1
         end
+        if not (prevCursorX == cursorPosCur.x) or not (prevCursorY == cursorPosCur.y) then PlayAudioTable(soundBips) end
 
         cursorPosDelta.x = SmoothValue(cursorPosDelta.x, cursorPosCur.x, cursorSpeed)
         cursorPosDelta.y = SmoothValue(cursorPosDelta.y, cursorPosCur.y, cursorSpeed)

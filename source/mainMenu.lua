@@ -131,7 +131,7 @@ function StartMainMenu()
 end
 function QuitToMenu()
     LaunchTransition("menu")
-    menu:removeMenuItem(menuQuitBtn)
+    if menuQuitBtn then menu:removeMenuItem(menuQuitBtn) end
 end
 
 function UpdateMainMenu()

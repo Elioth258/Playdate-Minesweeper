@@ -5,6 +5,13 @@ soundSwipes = {
     ssp.new("audios/Swipe2"),
     ssp.new("audios/Swipe3"),
 }
+soundBips = {
+    ssp.new("audios/Bip1"),
+    ssp.new("audios/Bip2"),
+    ssp.new("audios/Bip3"),
+    ssp.new("audios/Bip4"),
+    ssp.new("audios/Bip5"),
+}
 
 soundMainTheme  = ssp.new("audios/MainTheme")
 soundMenuSelect = ssp.new("audios/MenuSelect")
@@ -12,6 +19,7 @@ soundMenuGoBack = ssp.new("audios/MenuGoBack")
 
 soundFireworkBlast = ssp.new("audios/FireworkBlast")
 soundFireworkTrail = ssp.new("audios/FireworkTrail")
+soundExplosion     = ssp.new("audios/Explosion")
 
 function PlayAudioTable(soundTable, loop)
     if loop == nil then loop = 1 end
