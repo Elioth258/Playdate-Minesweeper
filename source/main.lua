@@ -17,8 +17,14 @@ local gfx <const> = playdate.graphics
 local gameData = ReadGameData()
 
 if gameData then
+	if gameData.saveID == nil then
+		gameData.saveID = 110
+		gameData.record = {nil, nil, nil}
+	end
+
 	locID     = gameData.locID
 	muteMusic = gameData.muteMusic
+	stopwatchRecord = gameData.record
 	SetDifficultyCustom(gameData.customDifficulty)
 	SetMainMenuCustomVar(gameData.customDifficulty)
 end
@@ -42,7 +48,7 @@ function Update()
 	totalTime += deltaTime
 
 	if globalState == "menu" then
-		UpdateMainMenu()
+		UpdateMainMenu(gameData)
 	elseif globalState == "game" then
 		UpdateBoard()
 	end

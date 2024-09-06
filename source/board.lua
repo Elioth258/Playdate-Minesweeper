@@ -23,6 +23,11 @@ local diffMap = {
     ["hard"]   = {width = 15, height = 10, bombs = 35},
     ["custom"] = {width = 5,  height = 5,  bombs = 5},
 }
+local diffIndex = {
+    ["easy"]   = 1,
+    ["medium"] = 2,
+    ["hard"]   = 3,
+}
 
 local board = {
     width  = 15,
@@ -172,13 +177,23 @@ function UpdateBoard()
         if tile.bombed then
             CrossTileImage(tile)
             gameState = "lose"
-            GenerateEndScreen(gameState, stopwatch)
+            GenerateEndScreen(gameState, stopwatch, false)
             PlayAudio(soundExplosion)
         else
             tileLeftToWin -= 1
             if tileLeftToWin == 0 then
                 gameState = "win"
-                GenerateEndScreen(gameState, stopwatch)
+                local isNewRecord = false
+
+                if not (difficulty == "custom") then
+                    isNewRecord = stopwatchRecord[diffIndex[difficulty]] == nil or stopwatch < stopwatchRecord[diffIndex[difficulty]]
+
+                    if isNewRecord then
+                        stopwatchRecord[diffIndex[difficulty]] = stopwatch
+                    end
+                end
+
+                GenerateEndScreen(gameState, stopwatch, isNewRecord)
             end
         end
 

@@ -1,0 +1,9 @@
+{
+	"customDifficulty": {
+		"bombs":30,
+		"height":11,
+		"width":15
+	},
+	"locID":1,
+	"muteMusic":false
+}

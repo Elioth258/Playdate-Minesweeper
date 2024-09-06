@@ -14,6 +14,8 @@ showDebugInfo    = false
 directlyGoInGame = false
 
 globalState = "menu" -- menu / game
+saveID = 110
+stopwatchRecord = {nil, nil, nil}
 
 function Clamp(value, min, max)
 	if value < min then
@@ -80,4 +82,14 @@ function OutlinedText(rawText, font)
     gfx.popContext()
 
     return text
+end
+
+function GetFormatedStopwatch(stopwatch)
+    local minutes = math.floor(stopwatch / 60)
+    local seconds = math.floor(stopwatch % 60)
+    local milliseconds = math.floor((stopwatch % 1) * 1000)
+
+    local formatStopwatch = string.format("%02d:%02d:%03d", minutes, seconds, milliseconds)
+
+    return formatStopwatch
 end

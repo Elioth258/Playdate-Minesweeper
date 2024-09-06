@@ -18,17 +18,18 @@ local imgRuleMarking    = gfx.image.new("images/Menu/Rules/Marking")
 local imgRuleUncovering = gfx.image.new("images/Menu/Rules/Uncovering")
 
 local imgMainTitle        = OutlinedText(allLoc.mainTitle[locID], bigFont)
-local imgMenuBackground   = OutlinedRectangle(160, 125, 1)
+local imgMenuBackground   = OutlinedRectangle(160, 160, 1)
 local imgRuleBackground   = OutlinedRectangle(244, 202, 4)
 local imgPlayBackground   = OutlinedRectangle(100, 120, 2)
 local imgCustomBackground = OutlinedRectangle(95,  110, 2)
+local imgRecordBackground = OutlinedRectangle(150, 140, 2)
 
 local backgroundDeltaX = 0
 local slideSpeed = 8
 
 local menuBoxes       = {}
 local menuMainI       = 1
-local menuMainMaxI    = 3
+local menuMainMaxI    = 4
 local menuMainSmoothI = 1
 local menuDeltaX      = screenHalfWidth
 
@@ -52,11 +53,13 @@ local customVar = {
     [3] = 5,
 }
 
+local recordDeltaX = screenHalfWidth
+
 local ruleLocs = {allLoc.ruleMainGoal, allLoc.ruleBoard, allLoc.ruleClick, allLoc.ruleNumber, allLoc.ruleDeduce, allLoc.ruleMarking, allLoc.ruleUncovering}
 local ruleImgs = {imgRuleMainGoal, imgRuleBoard, imgRuleClick, imgRuleNumber, imgRuleDeduce, imgRuleMarking, imgRuleUncovering}
 local ruleI    = 1
 
-local subState = "menu" -- menu / play / custom / rules
+local subState = "menu" -- menu / play / custom / rules / record
 local menu = playdate.getSystemMenu()
 local menuQuitBtn = nil
 
@@ -85,7 +88,7 @@ function InitMenuBoxes()
         return newBox
     end
 
-    local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules}
+    local boxLoc = {allLoc.mainPlay, allLoc.mainLanguage, allLoc.mainRules, allLoc.mainRecord}
 
     gfx.setFont(bigFont)
     for i = 1, menuMainMaxI, 1 do
@@ -112,6 +115,22 @@ function InitMenuBoxes()
         gfx.popContext()
     end
 end
+function InitRecordBox(gameData)
+    imgRecordBackground = OutlinedRectangle(130, 140, 2)
+
+    gfx.pushContext(imgRecordBackground)
+    gfx.setFont(smallFont)
+
+    local mods = {allLoc.boardModeEasy, allLoc.boardModeMedium, allLoc.boardModeHard}
+    for i = 1, 3, 1 do
+        local txtToDraw = mods[i][locID] .. " :\n"
+        local txtSupplement = stopwatchRecord[i] == nil and allLoc.boardNoRecord[locID] or GetFormatedStopwatch(stopwatchRecord[i])
+
+        gfx.drawTextAligned(txtToDraw .. txtSupplement, 65, i * 40 - 20, kTextAlignment.center)
+    end
+
+    gfx.popContext()
+end
 function SetMenuType(newMenu)
     if newMenu == "launch" then
         LaunchGame()
@@ -134,7 +153,7 @@ function QuitToMenu()
     if menuQuitBtn then menu:removeMenuItem(menuQuitBtn) end
 end
 
-function UpdateMainMenu()
+function UpdateMainMenu(gameData)
     local function UpdateMenu()
         if playdate.buttonJustPressed(playdate.kButtonUp) and menuMainI > 1 then
             PlayAudioTable(soundSwipes)
@@ -144,9 +163,20 @@ function UpdateMainMenu()
             menuMainI += 1
         elseif playdate.buttonJustPressed(playdate.kButtonA) then
             PlayAudio(soundMenuSelect)
-            if menuMainI == 1 then subState = "play"         end
-            if menuMainI == 2 then ChangeLanguage()          end
-            if menuMainI == 3 then LaunchTransition("rules") ruleI = 1 end
+            if menuMainI == 1 then
+                subState = "play"
+            end
+            if menuMainI == 2 then
+                ChangeLanguage()
+            end
+            if menuMainI == 3 then
+                LaunchTransition("rules")
+                ruleI = 1
+            end
+            if menuMainI == 4 then
+                subState = "record"
+                InitRecordBox(gameData)
+            end
         end
         menuMainSmoothI = SmoothValue(menuMainSmoothI, menuMainI, 10)
 
@@ -161,6 +191,7 @@ function UpdateMainMenu()
         menuDeltaX   = SmoothValue(menuDeltaX, screenHalfWidth, slideSpeed)
         playDeltaX   = SmoothValue(playDeltaX, menuDeltaX, slideSpeed)
         customDeltaX = SmoothValue(customDeltaX, playDeltaX, slideSpeed)
+        recordDeltaX = SmoothValue(recordDeltaX, menuDeltaX, slideSpeed)
     end
     local function UpdatePlay()
         if playdate.buttonJustPressed(playdate.kButtonUp) and playI > 1 then
@@ -195,6 +226,7 @@ function UpdateMainMenu()
         menuDeltaX   = SmoothValue(menuDeltaX, screenHalfWidth - 80, slideSpeed)
         playDeltaX   = SmoothValue(playDeltaX, menuDeltaX + 135, slideSpeed)
         customDeltaX = SmoothValue(customDeltaX, playDeltaX, slideSpeed)
+        recordDeltaX = SmoothValue(recordDeltaX, menuDeltaX, slideSpeed)
     end
     local function UpdateCustom()
         local previousVar1, previousVar2, previousVar3 = customVar[1], customVar[2], customVar[3]
@@ -242,6 +274,7 @@ function UpdateMainMenu()
         menuDeltaX   = SmoothValue(menuDeltaX, screenHalfWidth - 103, slideSpeed)
         playDeltaX   = SmoothValue(playDeltaX, menuDeltaX + 135, slideSpeed)
         customDeltaX = SmoothValue(customDeltaX, playDeltaX + 103, slideSpeed)
+        recordDeltaX = SmoothValue(recordDeltaX, menuDeltaX, slideSpeed)
     end
     local function UpdateRules()
         if playdate.buttonJustPressed(playdate.kButtonRight) and ruleI < #ruleLocs then
@@ -258,6 +291,20 @@ function UpdateMainMenu()
             LaunchTransition("quitRule")
         end
     end
+    local function UpdateRecord()
+        if playdate.buttonJustPressed(playdate.kButtonB) then
+            PlayAudio(soundMenuSelect)
+            subState = "menu"
+        end
+        for i, menuBox in ipairs(menuBoxes) do
+            menuBox.offsetX = SmoothValue(menuBox.offsetX, 0, 10)
+        end
+
+        menuDeltaX   = SmoothValue(menuDeltaX, screenHalfWidth + 80, slideSpeed)
+        playDeltaX   = SmoothValue(playDeltaX, menuDeltaX, slideSpeed)
+        customDeltaX = SmoothValue(customDeltaX, playDeltaX, slideSpeed)
+        recordDeltaX = SmoothValue(recordDeltaX, menuDeltaX - 160, slideSpeed)
+    end
 
     if subState == "menu" then
         UpdateMenu()
@@ -267,6 +314,8 @@ function UpdateMainMenu()
         UpdateCustom()
     elseif subState == "rules" then
         UpdateRules()
+    elseif subState == "record" then
+        UpdateRecord()
     end
 
     if deltaTime then backgroundDeltaX = (backgroundDeltaX + deltaTime * 30) % screenWidth  end
@@ -277,11 +326,11 @@ function DrawMainMenu()
 
         if imgMenuBackground then imgMenuBackground:drawCentered(menuDeltaX, screenHalfHeight + 10) end
         for i, menuBox in ipairs(menuBoxes) do
-            menuBox.image:drawCentered(menuDeltaX + menuBox.offsetX, 50 + i * 40)
+            menuBox.image:drawCentered(menuDeltaX + menuBox.offsetX, 30 + i * 40)
         end
 
         if subState == "menu" then
-            if imgSelectionArrow then imgSelectionArrow:drawCentered(menuDeltaX - 70, 50 + menuMainSmoothI * 40) end
+            if imgSelectionArrow then imgSelectionArrow:drawCentered(menuDeltaX - 70, 30 + menuMainSmoothI * 40) end
         end
     end
     local function DrawPlay()
@@ -327,16 +376,22 @@ function DrawMainMenu()
         local ruleToDraw = ruleImgs[ruleI]
         if ruleToDraw then ruleToDraw:drawCentered(325, screenHalfHeight) end
     end
+    local function DrawRecord()
+        if imgRecordBackground then imgRecordBackground:drawCentered(recordDeltaX, screenHalfHeight + 10) end
+    end
 
     if imgBackground then imgBackground:draw(-backgroundDeltaX, 0) end
     if imgBackground then imgBackground:draw(-backgroundDeltaX + screenWidth, 0) end
 
-    if subState == "menu" or subState == "play" or subState == "custom" then
+    if subState == "menu" or subState == "play" or subState == "custom" or subState == "record" then
         if not (math.abs(customDeltaX - playDeltaX) < 5) then
             DrawCustom()
         end
         if not (math.abs(playDeltaX - menuDeltaX) < 5) then
             DrawPlay()
+        end
+        if not (math.abs(recordDeltaX - menuDeltaX) < 5) then
+            DrawRecord()
         end
         DrawMenu()
     elseif subState == "rules" then

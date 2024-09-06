@@ -172,20 +172,11 @@ function UpdateFlagLeftUI(flagLeft)
     gfx.popContext()
 end
 
-function GetFormatedStopwatch(stopwatch)
-    local minutes = math.floor(stopwatch / 60)
-    local seconds = math.floor(stopwatch % 60)
-    local milliseconds = math.floor((stopwatch % 1) * 1000)
-
-    local formatStopwatch = string.format("%02d:%02d:%03d", minutes, seconds, milliseconds)
-
-    return formatStopwatch
-end
 function GetSurprised()
     isSurprised = 0.5
 end
 
-function GenerateEndScreen(gameState, stopwatch, difficulty)
+function GenerateEndScreen(gameState, stopwatch, isNewRecord)
     local width  = 230
     local height = 105
     local endLoc = gameState == "win" and allLoc.boardWon[locID] or allLoc.boardLose[locID]
@@ -200,7 +191,13 @@ function GenerateEndScreen(gameState, stopwatch, difficulty)
     gfx.drawTextAligned(endLoc, width / 2, 10, kTextAlignment.center)
 
     gfx.setFont(smallFont)
-    gfx.drawTextAligned(allLoc.boardTime[locID] .. " : " .. GetFormatedStopwatch(stopwatch), width / 2, height - 30, kTextAlignment.center)
+
+    local txtStopwatch = allLoc.boardTime[locID] .. " : " .. GetFormatedStopwatch(stopwatch)
+    if isNewRecord then
+        txtStopwatch = txtStopwatch .. " : " .. allLoc.boardNewRecord[locID]
+    end
+
+    gfx.drawTextAligned(txtStopwatch, width / 2, height - 30, kTextAlignment.center)
     gfx.drawTextAligned(GetDifficultyFormat(), width / 2, height - 15, kTextAlignment.center)
 
     gfx.popContext()

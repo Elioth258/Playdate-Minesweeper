@@ -8,6 +8,7 @@ allLoc = {
     mainLanguage = {"Language : EN", "Language : FR", "Sprache : DE", "Idioma : ES", "Idioma : PT"},
     mainRules    = {"Rules",         "Règles",        "Regeln",       "Reglas",      "Regras"},
     mainCredits  = {"Credits",       "Crédits",       "Credits",      "Créditos",    "Créditos"},
+    mainRecord   = {"Record",        "Record",        "Rekord",       "Récord",      "Recorde"},
 
     boardWon   = {"You won !", "C'est gagné !", "Du hast gewonnen!", "¡Has ganado!", "Você ganhou!"},
     boardLose  = {"You lost",  "C'est perdu",   "Du hast verloren",  "Has perdido",  "Você perdeu"},
@@ -25,8 +26,10 @@ allLoc = {
     boardCustomBomb   = {"Bomb",   "Bombe",   "Bombe",   "Bomba",  "Bomba"},
     boardCustomLaunch = {"Launch", "Lancer",  "Starten", "Lanzar", "Lançar"},
 
-    boardTime = {"Time", "Temps", "Zeit", "Tiempo", "Tempo"},
-    boardContinue = {"Press @ to continue", "Appuyez sur @ pour continuer", "Drücken Sie @, um fortzufahren", "Presiona @ para continuar", "Pressione @ para continuar"},
+    boardTime      = {"Time", "Temps", "Zeit", "Tiempo", "Tempo"},
+    boardContinue  = {"Press @ to continue", "Appuyez sur @ pour continuer", "Drücken Sie @, um fortzufahren", "Presiona @ para continuar", "Pressione @ para continuar"},
+    boardNewRecord = {"New record !", "Nouveau record !", "Neuer Rekord !", "¡Nuevo récord!", "Novo recorde !"},
+    boardNoRecord  = {"No record yet", "Pas de record", "Noch kein Rekord", "Aún no hay récord", "Ainda sem recorde"},
 
     ruleMainGoal = {
     "The goal is to clear the board containing hidden mines without clicking on any of them. Uncover all non-mine squares to win.",

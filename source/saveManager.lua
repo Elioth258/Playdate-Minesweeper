@@ -4,7 +4,10 @@ function SaveGameData(customDifficulty)
     local gameData = {
         locID = locID,
         muteMusic = muteMusic,
-        customDifficulty = customDifficulty
+        customDifficulty = customDifficulty,
+
+        saveID = saveID,
+        record = stopwatchRecord,
     }
 
     playdate.datastore.write(gameData, "save")
