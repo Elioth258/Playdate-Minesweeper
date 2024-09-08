@@ -2,6 +2,7 @@ import "conf"
 import "audio"
 import "UI"
 import "firework"
+import "animation"
 
 local gfx <const> = playdate.graphics
 
@@ -15,6 +16,8 @@ local imgHidden   = gfx.image.new("images/Tiles/Hidden")
 local imgEmpty    = gfx.image.new("images/Tiles/Empty")
 local imgFlag     = gfx.image.new("images/Tiles/Flag")
 local imgBomb     = gfx.image.new("images/Tiles/Bomb")
+
+local animFadeOut = CreateAnimation("FadingOut", 9)
 
 local difficulty = "easy"
 local diffMap = {
@@ -113,7 +116,10 @@ function InitBoard(bannedPos)
             reveal = false,
             bombed = false,
             number = 0,
-            image  = imgHidden
+            image  = imgHidden,
+
+            isFading = false,
+            dtFading = 0,
         }
         return newTile
     end
@@ -173,7 +179,10 @@ function UpdateBoard()
         if tile.reveal or tile.state == "flag" or tile.state == "question" then return end
 
         tile.reveal = true
+        tile.isFading = true
+        tile.timer = -Distance(x, y, cursorPosCur.x, cursorPosCur.y) / 2
         UpdateTileImage(tile)
+
         if tile.bombed then
             CrossTileImage(tile)
             gameState = "lose"
@@ -294,8 +303,25 @@ function UpdateBoard()
         end
     end
 
-    if mapIsInitialised and gameState == "none" then
-        if deltaTime then stopwatch += deltaTime end
+    if mapIsInitialised  then
+
+        for i = 1, board.height, 1 do
+            for j = 1, board.width, 1 do
+
+                local tile = board.tileMap[i][j]
+                if tile.isFading then
+                    tile.timer += deltaTime * 4
+                    if tile.timer > 1 then
+                        tile.isFading = false
+                    end
+                end
+
+            end
+        end
+
+        if gameState == "none" then
+            if deltaTime then stopwatch += deltaTime end
+        end
     end
 
     if gameState == "win" then
@@ -327,6 +353,10 @@ function DrawBoard()
                 if imgHidden then imgHidden:draw(x, y) end
             else
                 board.tileMap[i][j].image:draw(x, y)
+
+                if board.tileMap[i][j].isFading then
+                    GetSpecificFrame(animFadeOut, board.tileMap[i][j].timer):draw(x, y)
+                end
             end
         end
     end
