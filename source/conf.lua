@@ -11,7 +11,7 @@ deltaTime = 0
 totalTime = 0
 muteMusic        = false
 showDebugInfo    = false
-directlyGoInGame = true
+directlyGoInGame = false
 
 globalState = "menu" -- menu / game
 saveID = 110
