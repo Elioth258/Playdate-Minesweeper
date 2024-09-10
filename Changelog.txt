@@ -1,0 +1,6 @@
+V 1.0.0 :
+-Game release
+
+V 1.1.0 :
+-Added a record-tracking page
+-Added smoother animation on board
