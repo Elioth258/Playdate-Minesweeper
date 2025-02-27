@@ -1,4 +1,5 @@
 local ssp <const> = playdate.sound.sampleplayer
+local sfp <const> = playdate.sound.fileplayer
 
 soundSwipes = {
     ssp.new("audios/Swipe1"),
@@ -13,7 +14,7 @@ soundBips = {
     ssp.new("audios/Bip5"),
 }
 
-soundMainTheme  = ssp.new("audios/MainTheme")
+soundMainTheme  = sfp.new("audios/MainTheme")
 soundMenuSelect = ssp.new("audios/MenuSelect")
 soundMenuGoBack = ssp.new("audios/MenuGoBack")
 
